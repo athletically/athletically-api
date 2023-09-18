@@ -12,6 +12,9 @@ const UserModel = mongoose.model('User');
 const uploadLib = require('../libs/uploadLib');
 const timeLib = require('../libs/timeLib');
 
+let test = async(req, res) => {
+    res.status(200).json('Server is running');
+}
 
 let login = async(req, res) => {
 
@@ -84,6 +87,7 @@ let register = async(req, res) => {
 
 
 module.exports = {
+    test: test,
     login: login,
     register: register,
 

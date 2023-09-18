@@ -38,6 +38,7 @@ appConfig.db = {
 };
 
 
-appConfig.baseUrl = 'http://localhost:3009';
+// appConfig.baseUrl = 'http://localhost:3009';
+appConfig.baseUrl = 'https://athletically.onrender.com';
 
 module.exports = appConfig;
