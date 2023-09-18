@@ -1,0 +1,38 @@
+{
+    "dev": {
+        "username": "atheleticaly123",
+        "password": "A1>A2>A3>A4>",
+        "database": "athletically",
+        "host": "athletically-cluster.bq6ivlo.mongodb.net",
+        "port": "8081",
+        "dialect": "mongo",
+        "dialectOptions": {
+            "charset": "utf8mb4_unicode_ci"
+        },
+        "datetime": "yyyy-MM-dd HH:mm:ss"
+    },
+    "stg": {
+        "username": "",
+        "password": "",
+        "database": "",
+        "host": "",
+        "port": "",
+        "dialect": "",
+        "dialectOptions": {
+            "charset": ""
+        },
+        "datetime": ""
+    },
+    "prd": {
+        "username": "",
+        "password": "",
+        "database": "",
+        "host": "",
+        "port": "",
+        "dialect": "",
+        "dialectOptions": {
+            "charset": ""
+        },
+        "datetime": ""
+    }
+}
