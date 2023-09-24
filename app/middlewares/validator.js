@@ -5,21 +5,42 @@ const Joi = require('joi').extend(require('@joi/date'));
 
 const customLoginValidateSchema = Joi.object({
     username: Joi.string()
-        .required(),
+        .required()
+        .messages({
+            'string.empty': `Username cannot be empty`,
+            'any.required': `Please enter your username`
+          }),
     password: Joi.string()
         .max(20)
         .required()
+        .messages({
+            'string.empty': `Password cannot be empty`,
+            'any.required': `Please enter your password`
+          })
         // source_type: Joi.number().required()
 });
 
 const customRegisterValidateSchema = Joi.object({
     username: Joi.string()
-        .required(),
+        .required()
+        .messages({
+            'string.empty': `Username cannot be empty`,
+            'any.required': `Please enter your username`
+          }),
     password: Joi.string()
         .max(20)
-        .required(),
+        .required()
+        .messages({
+            'string.empty': `Password cannot be empty`,
+            'any.required': `Please enter your password`
+          }),
     email: Joi.string().email()
-        .required(),
+        .required()
+        .messages({
+            'string.email': `Please enter a valid email`,
+            'string.empty': `Email cannot be empty`,
+            'any.required': `Please enter your Email`
+          }),
 });
 
 
