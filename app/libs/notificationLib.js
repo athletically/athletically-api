@@ -2,6 +2,9 @@ const nodemailer = require('nodemailer');
 const smtpTransport = require('nodemailer-smtp-transport');
 const response = require('./responseLib');
 const appConfig = require('../../config/appConfig');
+let transporter = nodemailer.createTransport({ 
+      service: 'gmail',
+      auth: { user: process.env.MAIL_USERNAME, pass: process.env.MAIL_PASSWORD }, });
 
 
 let sendSMS = (params) => {
@@ -27,9 +30,9 @@ let sendEmail = (options)=>{
        
        let mailOptions = {
            from: process.env.APP_EMAIL,
-           to: options.communication_details,
-           subject: 'OTP Validation Red Apple Examination Platform',
-           text: `OTP : ${options.otp}`
+           to: options.email,
+           subject: 'OTP verication For Athletically App',
+           text: `Your OTP for Password Reset Reuest is :  ${options.otp}`
          };
        
          transporter.sendMail(mailOptions, function(error, info){
@@ -39,7 +42,7 @@ let sendEmail = (options)=>{
              reject(apiResponse)
            } else {
              console.log('Email sent: ' + info.response);
-             let apiResponse = response.generate(false, 'Otp sent successfully', 1, JSON.stringify({user_id:options.user_id}))
+             let apiResponse = response.generate(false, 'Otp sent successfully', 1, null)
              resolve(apiResponse)
            }
          }); 

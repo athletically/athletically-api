@@ -11,4 +11,8 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/`, userController.test);
     app.post(`${baseUrl}/login`, validator.loginValidate, userController.login);
     app.post(`${baseUrl}/register`, validator.registerValidate, userController.register);
+    app.post(`${baseUrl}/send-otp`, validator.sendMailForgotPasswordValidate, userController.sendOtpForgotPassword);
+    app.post(`${baseUrl}/verify-otp`, validator.verifyOTPvalidate, userController.verifyOTP);
+    app.post(`${baseUrl}/reset-password`, validator.resetPasswordvalidate, userController.resetPassword);
+
 };
