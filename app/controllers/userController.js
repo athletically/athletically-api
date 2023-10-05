@@ -177,6 +177,34 @@ let resetPassword = async(req, res) => {
     }
 }
 
+const getAllReels = async(req, res) => {
+    try {
+        let ret = [
+            {
+                url : "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392"
+            },
+            {
+                url : "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544"
+            },
+            {
+                url : "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f11120602d3e24cca_d20231002_m171434_c005_v0501009_t0043_u01696266874697"
+            },
+            {
+                url : "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f11542ef257e1f2eb_d20231002_m171531_c005_v0501013_t0032_u01696266931483"
+            },
+            {
+                url : "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1199fdc891b5626f_d20231002_m171453_c005_v0501013_t0058_u01696266893544"
+            },
+        ]
+
+        let apiResponse = response.generate(false, 'Available Reels', ret);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, null);
+        res.send(apiResponse);
+    }
+}
+
 
 
 module.exports = {
@@ -186,4 +214,5 @@ module.exports = {
     sendOtpForgotPassword: sendOtpForgotPassword,
     verifyOTP: verifyOTP,
     resetPassword: resetPassword,
+    getAllReels: getAllReels,
 }
