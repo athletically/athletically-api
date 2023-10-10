@@ -82,7 +82,15 @@ const resetPasswordvalidateSchema = Joi.object({
         }),
 })
 
-
+const homepageReelsValidateSchema = Joi.object({
+    username: Joi.string()
+        .required()
+        .messages({
+            'string.empty': `Username cannot be empty`,
+            'any.required': `Please enter your username`
+    })
+        // source_type: Joi.number().required()
+});
 
 
 let loginValidate = async(req, res, next) => {
@@ -161,6 +169,20 @@ let resetPasswordvalidate = async(req, res, next) => {
     }
 }
 
+let homepageReelsValidate = async(req, res, next) => {
+    try {
+        const value = await homepageReelsValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
 
 module.exports = {
     loginValidate: loginValidate,
@@ -168,4 +190,5 @@ module.exports = {
     sendMailForgotPasswordValidate: sendMailForgotPasswordValidate,
     verifyOTPvalidate: verifyOTPvalidate,
     resetPasswordvalidate: resetPasswordvalidate,
+    homepageReelsValidate: homepageReelsValidate
 }
