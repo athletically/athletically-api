@@ -15,6 +15,6 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/verify-otp`, validator.verifyOTPvalidate, userController.verifyOTP);
     app.post(`${baseUrl}/reset-password`, validator.resetPasswordvalidate, userController.resetPassword);
     app.get(`${baseUrl}/get-all-reels`, userController.getAllReels);
-    app.post(`${baseUrl}/get-homepage-reels`, validator.homepageReelsValidate, userController.homePageReels);
-
+    // app.post(`${baseUrl}/get-homepage-reels`, validator.homepageReelsValidate, userController.homePageReels);
+    app.get(`${baseUrl}/get-homepage-reels`, userController.homePageReels);
 };
