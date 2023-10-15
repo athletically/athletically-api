@@ -220,7 +220,7 @@ const homePageReels = async (req, res) => {
                     },
                     {
                         type: "reel",
-                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?         fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
                         id: "651850485d97800148bbb843"
                     },
                     {
@@ -232,7 +232,7 @@ const homePageReels = async (req, res) => {
                 [
                     {
                         type: "reel",
-                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?         fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
                         id: "651850485d97800148bbb843"
                     },
                     {
@@ -256,7 +256,7 @@ const homePageReels = async (req, res) => {
                     },
                     {
                         type: "reel",
-                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?         fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                        url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
                         id: "651850485d97800148bbb843"
                     },
                     {
