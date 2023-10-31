@@ -17,4 +17,5 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-all-reels`, userController.getAllReels);
     // app.post(`${baseUrl}/get-homepage-reels`, validator.homepageReelsValidate, userController.homePageReels);
     app.get(`${baseUrl}/get-homepage-reels`, userController.homePageReels);
+    app.post(`${baseUrl}/get-user-reels`, validator.getAllReelsOfUserValidate, userController.getAllReelsOfUser);
 };

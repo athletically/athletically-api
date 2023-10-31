@@ -92,6 +92,15 @@ const homepageReelsValidateSchema = Joi.object({
         // source_type: Joi.number().required()
 });
 
+const getAllReelsOfUserValidateSchema = Joi.object({
+    user_id: Joi.string()
+        .required()
+        .messages({
+            'string.empty': `user_id cannot be empty`,
+            'any.required': `Please provide user_id`
+    })
+})
+
 
 let loginValidate = async(req, res, next) => {
     try {
@@ -184,11 +193,27 @@ let homepageReelsValidate = async(req, res, next) => {
     }
 }
 
+let getAllReelsOfUserValidate = async(req, res, next) => {
+    try {
+        const value = await getAllReelsOfUserValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
     sendMailForgotPasswordValidate: sendMailForgotPasswordValidate,
     verifyOTPvalidate: verifyOTPvalidate,
     resetPasswordvalidate: resetPasswordvalidate,
-    homepageReelsValidate: homepageReelsValidate
+    homepageReelsValidate: homepageReelsValidate,
+    getAllReelsOfUserValidate: getAllReelsOfUserValidate
 }
