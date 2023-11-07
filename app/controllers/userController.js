@@ -301,14 +301,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 1",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb843",
                             likes: 0,
                             comment: 0
                         },
                         {
                             title: "dummy title 3",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb844",
                             likes: 7,
                             comment: 2
@@ -323,14 +323,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 2",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb843",
                             likes: 10,
                             comment: 6
                         },
                         {
                             title: "dummy title 4",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb844",
                             likes: 71,
                             comment: 22
@@ -345,14 +345,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 5",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb843",
                             likes: 11,
                             comment: 0
                         },
                         {
                             title: "dummy title 7",
-                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
+                            url: "https://drive.google.com/file/d/1jHM32ppK44LRAa6l0CK2zYBBOIXA2ZI1/view?usp=sharing",
                             id: "651850485d97800148bbb844",
                             likes: 1,
                             comment: 3
