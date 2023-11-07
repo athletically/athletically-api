@@ -205,6 +205,88 @@ const getAllReels = async (req, res) => {
     }
 }
 
+// const homePageReels = async (req, res) => {
+//     try {
+//         let ret = {
+//             error: false,
+//             message: "Homepage Reels",
+//             data: [
+//                 {
+//                     image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
+//                     name: "Rajdeep Adhikary",
+//                     id: "65084a48b5c351c3bdbd492b",
+//                     username: "rajdeep",
+//                     reels: [
+//                         {
+//                             title: "dummy title 1",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+//                             id: "651850485d97800148bbb843",
+//                             likes: 0,
+//                             comment: 0
+//                         },
+//                         {
+//                             title: "dummy title 3",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+//                             id: "651850485d97800148bbb844",
+//                             likes: 7,
+//                             comment: 2
+//                         }
+//                     ]
+//                 },
+//                 {
+//                     image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
+//                     name: "Rahul Sharma",
+//                     id: "65084a48b5c35213bdbd492b",
+//                     username: "rahul",
+//                     reels: [
+//                         {
+//                             title: "dummy title 2",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+//                             id: "651850485d97800148bbb843",
+//                             likes: 10,
+//                             comment: 6
+//                         },
+//                         {
+//                             title: "dummy title 4",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+//                             id: "651850485d97800148bbb844",
+//                             likes: 71,
+//                             comment: 22
+//                         }
+//                     ]
+//                 },
+//                 {
+//                     image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
+//                     name: "Anuvab Singh",
+//                     id: "65084a48b5c351c3bdbd444",
+//                     username: "anuvab",
+//                     reels: [
+//                         {
+//                             title: "dummy title 5",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+//                             id: "651850485d97800148bbb843",
+//                             likes: 11,
+//                             comment: 0
+//                         },
+//                         {
+//                             title: "dummy title 7",
+//                             url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+//                             id: "651850485d97800148bbb844",
+//                             likes: 1,
+//                             comment: 3
+//                         }
+//                     ]
+//                 }
+//             ]
+//         }
+//         let apiResponse = response.generate(false, 'Homepaae Reels', ret);
+//         res.status(200).send(apiResponse);
+//     } catch (error) {
+//         let apiResponse = response.generate(true, error.message, null);
+//         res.status(500).send(apiResponse);
+//     }
+// }
+
 const homePageReels = async (req, res) => {
     try {
         let ret = {
@@ -219,14 +301,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 1",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb843",
                             likes: 0,
                             comment: 0
                         },
                         {
                             title: "dummy title 3",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb844",
                             likes: 7,
                             comment: 2
@@ -241,14 +323,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 2",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb843",
                             likes: 10,
                             comment: 6
                         },
                         {
                             title: "dummy title 4",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb844",
                             likes: 71,
                             comment: 22
@@ -263,14 +345,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 5",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb843",
                             likes: 11,
                             comment: 0
                         },
                         {
                             title: "dummy title 7",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
+                            url: "https://drive.google.com/file/d/1dlEMYG0FCHcxPc_5kJ9vBeNMpRKO5mcu/view?usp=drive_link",
                             id: "651850485d97800148bbb844",
                             likes: 1,
                             comment: 3
