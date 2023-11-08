@@ -301,14 +301,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 1",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb843",
                             likes: 0,
                             comment: 0
                         },
                         {
                             title: "dummy title 3",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb844",
                             likes: 7,
                             comment: 2
@@ -323,14 +323,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 2",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb843",
                             likes: 10,
                             comment: 6
                         },
                         {
                             title: "dummy title 4",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb844",
                             likes: 71,
                             comment: 22
@@ -345,14 +345,14 @@ const homePageReels = async (req, res) => {
                     reels: [
                         {
                             title: "dummy title 5",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb843",
                             likes: 11,
                             comment: 0
                         },
                         {
                             title: "dummy title 7",
-                            url: "https://file-examples.com/storage/fe9d743740654a8139a48e1/2017/04/file_example_MP4_480_1_5MG.mp4",
+                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
                             id: "651850485d97800148bbb844",
                             likes: 1,
                             comment: 3
