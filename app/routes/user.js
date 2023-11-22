@@ -4,7 +4,11 @@ const userController = require('../controllers/userController');
 const appConfig = require("./../../config/appConfig");
 const auth = require('./../middlewares/auth');
 const validator = require('../middlewares/validator');
+const multer = require('multer');
 
+// Configure multer for handling form-data
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}`;
@@ -18,4 +22,5 @@ module.exports.setRouter = (app) => {
     // app.post(`${baseUrl}/get-homepage-reels`, validator.homepageReelsValidate, userController.homePageReels);
     app.get(`${baseUrl}/get-homepage-reels`, userController.homePageReels);
     app.post(`${baseUrl}/get-user-reels`, validator.getAllReelsOfUserValidate, userController.getAllReelsOfUser);
+    app.post(`${baseUrl}/create-reels`, upload.single('reel'), validator.createReelsValidate, userController.createReels);
 };

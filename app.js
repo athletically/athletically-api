@@ -23,6 +23,7 @@ fs.readdirSync(schemaPath).forEach(function (file) {
 // app.set('view engine','ejs');
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+// app.use(express.bodyParser());
 app.use(routeLoggerMiddleware.logIp);
 app.use(globalErrorMiddleware.globalErrorHandler);
 

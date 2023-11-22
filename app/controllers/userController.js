@@ -14,6 +14,18 @@ const uploadLib = require('../libs/uploadLib');
 const timeLib = require('../libs/timeLib');
 const notificationLib = require('../libs/notificationLib');
 const checkLib = require('../libs/checkLib');
+const AWS = require('aws-sdk');
+const path = require('path');
+const postModel = mongoose.model('Post');
+
+AWS.config.update({
+  accessKeyId: process.env.AWS_KEY,
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const s3 = new AWS.S3();
+
 
 let test = async (req, res) => {
     res.status(200).json('Server is running');
@@ -421,6 +433,48 @@ let getAllReelsOfUser = async(req, res) => {
     }
 }
 
+const createReels = async(req, res) => {
+    try {
+        const bucketName = process.env.S3_BUCKET;
+        const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
+        const fileContent = req.file.buffer;
+
+        const params = {
+            Bucket: bucketName,
+            Key: fileName,
+            Body: fileContent,
+            ContentType: 'video/mp4'
+        };
+
+        s3.putObject(params, async (err, data) => {
+            if (err) {
+                let apiResponse = response.generate(true, 'File upload failed', err);
+                console.error('Error uploading file:', err);
+                res.status(200).send(apiResponse);
+            } else {
+                const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+                const newPost = new postModel({
+                    'user_id' : req.body.user_id,
+                    'reel_link' : objectUrl,
+                    'text' : req.body.post,
+                    'status' : 'active',
+                    'created_on' : Date.now()
+                });
+
+                const added = await newPost.save();
+
+                let apiResponse = response.generate(false, 'File uploaded successfully', added);
+                console.log('File uploaded successfully:', data);
+                res.status(200).send(apiResponse);
+            }
+        });
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, null);
+        console.error('Error uploading file catch:', error.message);
+        res.status(500).send(apiResponse);
+    }
+}
+
 
 
 module.exports = {
@@ -432,5 +486,6 @@ module.exports = {
     resetPassword: resetPassword,
     getAllReels: getAllReels,
     homePageReels: homePageReels,
-    getAllReelsOfUser: getAllReelsOfUser
+    getAllReelsOfUser: getAllReelsOfUser,
+    createReels: createReels
 }

@@ -102,6 +102,15 @@ const getAllReelsOfUserValidateSchema = Joi.object({
 })
 
 
+const createReelsValidateSchema = Joi.object({
+    post: Joi.string(),
+    user_id: Joi.string()
+        .required(),
+
+
+})
+
+
 let loginValidate = async(req, res, next) => {
     try {
         const value = await customLoginValidateSchema.validate(req.body);
@@ -208,6 +217,22 @@ let getAllReelsOfUserValidate = async(req, res, next) => {
     }
 }
 
+
+let createReelsValidate = async(req, res, next) => {
+    try {
+        const value = await createReelsValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
@@ -215,5 +240,6 @@ module.exports = {
     verifyOTPvalidate: verifyOTPvalidate,
     resetPasswordvalidate: resetPasswordvalidate,
     homepageReelsValidate: homepageReelsValidate,
-    getAllReelsOfUserValidate: getAllReelsOfUserValidate
+    getAllReelsOfUserValidate: getAllReelsOfUserValidate,
+    createReelsValidate: createReelsValidate
 }
