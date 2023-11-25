@@ -4,6 +4,7 @@
  */
 const { v4: uuidv4 } = require('uuid');
 const { generatePassword } = require('../libs/otpLib');
+const timeLib = require('../libs/timeLib');
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
@@ -25,13 +26,17 @@ let userSchema = new Schema({
     type: Boolean,
     default:true
   },
+  image: {
+    type: String,
+    default: "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
+  },
   user_type:{
     type: Number,
     default:1
   },
   created_on :{
     type:Date,
-    default:""
+    default: timeLib.getLocalTime()
   }
 })
 

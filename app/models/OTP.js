@@ -4,6 +4,7 @@
  */
 const { v4: uuidv4 } = require('uuid');
 const { generatePassword } = require('../libs/otpLib');
+const timeLib = require('../libs/timeLib');
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
@@ -18,7 +19,7 @@ let otpSchema = new Schema({
   },
   created_on :{
     type:Date,
-    default:""
+    default: timeLib.getLocalTime()
   }
 })
 

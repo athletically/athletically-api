@@ -23,4 +23,8 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-homepage-reels`, userController.homePageReels);
     app.post(`${baseUrl}/get-user-reels`, validator.getAllReelsOfUserValidate, userController.getAllReelsOfUser);
     app.post(`${baseUrl}/create-reels`, upload.single('reel'), validator.createReelsValidate, userController.createReels);
+    // like/comment post routes
+    app.post(`${baseUrl}/like-reel`, validator.likePostValidate, userController.likePost);
+    app.post(`${baseUrl}/dislike-reel`, validator.dislikePostValidate, userController.dislikePost);
+    app.post(`${baseUrl}/comment-reel`, validator.commentPostValidate, userController.commentPost);
 };

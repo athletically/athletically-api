@@ -17,6 +17,8 @@ const checkLib = require('../libs/checkLib');
 const AWS = require('aws-sdk');
 const path = require('path');
 const postModel = mongoose.model('Post');
+const likeModel = mongoose.model('Like');
+const commentModel = mongoose.model('Comment');
 
 AWS.config.update({
   accessKeyId: process.env.AWS_KEY,
@@ -301,6 +303,63 @@ const getAllReels = async (req, res) => {
 
 const homePageReels = async (req, res) => {
     try {
+
+        let rows = await UserModel.aggregate([
+            {
+              $match: {
+                is_active : true
+              }
+            },
+            {
+              $lookup: {
+                from: 'posts',
+                localField: '_id',
+                foreignField: 'user_id',
+                as: 'reels'
+              }
+            },
+            {
+              $match: {
+                reels: { $ne : [] },
+              }
+            }
+        ]);
+
+        if(rows.length < 1){
+            let apiResponse = response.generate(false, 'No Reels not found', []);
+            res.status(200).send(apiResponse);
+        }
+
+        let returndata = [];
+
+        rows.forEach(row => {
+            let temp = {};
+            temp.id = row._id;
+            temp.name = (row.name !== undefined) ? row.name : row.username;
+            temp.username = row.username;
+            temp.image = row.image;
+            temp.reels = [];
+
+            row.reels.forEach(reel => {
+                if(reel.status === 'active'){
+                    temp.reels.push({
+                        title : reel.text,
+                        url : reel.reel_link,
+                        id : reel._id,
+                        likes : reel.likes,
+                        comment : 0
+                    })
+                }
+            })
+
+            if(temp.reels.length > 0)
+                returndata.push(temp);
+        })
+
+        
+
+
+
         let ret = {
             error: false,
             message: "Homepage Reels",
@@ -373,7 +432,7 @@ const homePageReels = async (req, res) => {
                 }
             ]
         }
-        let apiResponse = response.generate(false, 'Homepaae Reels', ret);
+        let apiResponse = response.generate(false, 'Reels Found', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, null);
@@ -383,6 +442,28 @@ const homePageReels = async (req, res) => {
 
 let getAllReelsOfUser = async(req, res) => {
     try {
+
+        let rawdata = await postModel.find({ user_id : new mongoose.Types.ObjectId(req.body.user_id), status : 'active' });
+
+
+        let returndata = [];
+
+        if(rawdata.length < 1){
+            let apiResponse = response.generate(false, 'No reels of the user is found', []);
+            res.status(200).send(apiResponse);
+            return;
+        }
+
+        rawdata.forEach(row => {
+            returndata.push({
+                id : row._id,
+                title : row.text,
+                url : row.reel_link,
+                likes : row.likes,
+                comment : 0
+            })
+        })
+
         let ret = {
             error: false,
             message: "Homepage Reels",
@@ -425,7 +506,7 @@ let getAllReelsOfUser = async(req, res) => {
                     
             ]
         }
-        let apiResponse = response.generate(false, 'All Reels Of User', ret);
+        let apiResponse = response.generate(false, 'All Reels Of User', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, null);
@@ -441,7 +522,7 @@ const createReels = async(req, res) => {
 
         const params = {
             Bucket: bucketName,
-            Key: fileName,
+            Key: `reels/${fileName}`,
             Body: fileContent,
             ContentType: 'video/mp4'
         };
@@ -452,7 +533,7 @@ const createReels = async(req, res) => {
                 console.error('Error uploading file:', err);
                 res.status(200).send(apiResponse);
             } else {
-                const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/${fileName}`;
+                const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/reels/${fileName}`;
                 const newPost = new postModel({
                     'user_id' : req.body.user_id,
                     'reel_link' : objectUrl,
@@ -475,6 +556,67 @@ const createReels = async(req, res) => {
     }
 }
 
+const likePost = async(req, res) => {
+    try {
+        
+        let likeData = new likeModel({
+            liked_by : req.body.liked_by,
+            reel_id : req.body.reel_id
+        });
+        await likeData.save();
+
+        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { likes: 1 } }, { new : true });
+        
+        let apiResponse = response.generate(false, '+1 like', updatePost);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, 'no like', {});
+        res.status(500).send(apiResponse);
+    }
+
+}
+
+
+const dislikePost = async(req, res) => {
+    try {
+        
+        await likeModel.deleteOne({ liked_by : req.body.disliked_by, reel_id : req.body.reel_id });
+
+        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { likes: -1 } }, { new : true });
+        
+        let apiResponse = response.generate(false, '+1 like', updatePost);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, 'no like', {});
+        res.status(500).send(apiResponse);
+    }
+
+}
+
+const commentPost = async(req, res) => {
+    try {
+        
+        let commentData = new commentModel({
+            comment_by : req.body.comment_by,
+            reel_id : req.body.reel_id,
+            comment : req.body.comment
+        });
+        await commentData.save();
+
+        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { comments: 1 } }, { new : true });
+        
+        let apiResponse = response.generate(false, '+1 comment added', updatePost);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, 'no comment added', {});
+        res.status(500).send(apiResponse);
+    }
+
+}
+
 
 
 module.exports = {
@@ -487,5 +629,8 @@ module.exports = {
     getAllReels: getAllReels,
     homePageReels: homePageReels,
     getAllReelsOfUser: getAllReelsOfUser,
-    createReels: createReels
+    createReels: createReels,
+    likePost: likePost,
+    dislikePost: dislikePost,
+    commentPost: commentPost
 }

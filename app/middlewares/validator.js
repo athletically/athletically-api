@@ -95,10 +95,6 @@ const homepageReelsValidateSchema = Joi.object({
 const getAllReelsOfUserValidateSchema = Joi.object({
     user_id: Joi.string()
         .required()
-        .messages({
-            'string.empty': `user_id cannot be empty`,
-            'any.required': `Please provide user_id`
-    })
 })
 
 
@@ -233,6 +229,74 @@ let createReelsValidate = async(req, res, next) => {
     }
 }
 
+const likePostValidateSchema = Joi.object({
+    liked_by : Joi.string().required(),
+    reel_id : Joi.string().required()
+})
+
+
+let likePostValidate = async(req, res, next) => {
+    try {
+        const value = await likePostValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+
+const dislikePostValidateSchema = Joi.object({
+    disliked_by : Joi.string().required(),
+    reel_id : Joi.string().required()
+})
+
+
+let dislikePostValidate = async(req, res, next) => {
+    try {
+        const value = await dislikePostValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+
+const commentPostValidateSchema = Joi.object({
+    comment_by : Joi.string().required(),
+    reel_id : Joi.string().required(),
+    comment : Joi.string().required()
+})
+
+
+let commentPostValidate = async(req, res, next) => {
+    try {
+        const value = await commentPostValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
@@ -241,5 +305,8 @@ module.exports = {
     resetPasswordvalidate: resetPasswordvalidate,
     homepageReelsValidate: homepageReelsValidate,
     getAllReelsOfUserValidate: getAllReelsOfUserValidate,
-    createReelsValidate: createReelsValidate
+    createReelsValidate: createReelsValidate,
+    likePostValidate: likePostValidate,
+    dislikePostValidate: dislikePostValidate,
+    commentPostValidate: commentPostValidate
 }

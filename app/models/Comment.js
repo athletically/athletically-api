@@ -8,29 +8,16 @@ const timeLib = require('../libs/timeLib');
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-let postSchema = new Schema({
-  user_id: {
+let commentSchema = new Schema({
+  comment_by: {
     type: mongoose.Types.ObjectId,
   },
-  reel_link: {
+  reel_id: {
+    type: mongoose.Types.ObjectId,
+  },
+  comment: {
     type: String,
     default: ''
-  },
-  text: {
-    type: String,
-    default: ''
-  },
-  likes: {
-    type: Number,
-    default : 0
-  },
-  comments: {
-    type: Number,
-    default : 0
-  },
-  status:{
-    type: String,
-    default : 'active'
   },
   created_on :{
     type:Date,
@@ -39,4 +26,4 @@ let postSchema = new Schema({
 })
 
 
-mongoose.model('Post', postSchema);
+mongoose.model('Comment', commentSchema);
