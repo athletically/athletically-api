@@ -443,7 +443,11 @@ const homePageReels = async (req, res) => {
 let getAllReelsOfUser = async(req, res) => {
     try {
 
-        let rawdata = await postModel.find({ user_id : new mongoose.Types.ObjectId(req.body.user_id), status : 'active' });
+        let userdtls = await postModel.findOne({ _id : new mongoose.Types.ObjectId(req.body.reel_id) });
+
+        let user_id = userdtls.user_id;
+
+        let rawdata = await postModel.find({ user_id : user_id, status : 'active' });
 
 
         let returndata = [];

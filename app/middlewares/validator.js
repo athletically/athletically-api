@@ -93,7 +93,7 @@ const homepageReelsValidateSchema = Joi.object({
 });
 
 const getAllReelsOfUserValidateSchema = Joi.object({
-    user_id: Joi.string()
+    reel_id: Joi.string()
         .required()
 })
 
