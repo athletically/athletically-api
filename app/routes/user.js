@@ -27,4 +27,8 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/like-reel`, validator.likePostValidate, userController.likePost);
     app.post(`${baseUrl}/dislike-reel`, validator.dislikePostValidate, userController.dislikePost);
     app.post(`${baseUrl}/comment-reel`, validator.commentPostValidate, userController.commentPost);
+    app.get(`${baseUrl}/delete-all-reel`, userController.deleteAllReels);
+    app.get(`${baseUrl}/get-game-list`, userController.getGameList);
+    app.post(`${baseUrl}/get-position-list`, validator.getPostionValidate, userController.getPositionsList);
+    app.post(`${baseUrl}/update-profile`, validator.updateProfileValidate, userController.updateProfile);
 };

@@ -621,7 +621,82 @@ const commentPost = async(req, res) => {
 
 }
 
+const deleteAllReels = async(req, res) => {
+    await postModel.deleteMany({ status : 'active' });
+    res.send('success');
+}
 
+
+const getGameList = async(req, res) => {
+
+    const gameList = [
+        {
+            id : 'y12lxsj7282541225312wj8',
+            name : 'Cricket'
+        },
+        {
+            id : 'y12lxsj7282541225312wj9',
+            name : 'Football'
+        },
+        {
+            id : 'y12lxsj2282541225312wj1',
+            name : 'Kabadi'
+        },
+        {
+            id : 'y12lxsj7282541225312io1',
+            name : 'Hockey'
+        },
+        {
+            id : 'y12lxsj728254122531ckd2',
+            name : 'Tennis'
+        }
+    ];
+    
+    let apiResponse = response.generate(false, 'Game List', gameList);
+    res.status(200).send(apiResponse);
+}
+
+const getPositionsList = async(req, res) => {
+
+    const gameList = [
+        {
+            id : 'y12lxsj7282541225k1l29s',
+            name : 'GoalKeeper'
+        },
+        {
+            id : 'ersdxsj7282541225312o1a',
+            name : 'Center Back'
+        },
+        {
+            id : 'ersdxsj728254122531df1a',
+            name : 'Right Back'
+        },
+        {
+            id : 'ersdxsj7282541225312129',
+            name : 'Left Back'
+        },
+        {
+            id : 'ersdxsj72825412253l1axdd',
+            name : 'Center Midfielder'
+        },
+        {
+            id : 'ersdxsj72825412253l18512',
+            name : 'Attacking Midfielder'
+        },
+        {
+            id : 'ersdxsj72825412253lol12',
+            name : 'Attacking Forward'
+        },
+    ];
+    
+    let apiResponse = response.generate(false, 'Position List', gameList);
+    res.status(200).send(apiResponse);
+}
+
+const updateProfile = async(req, res) => {
+    let apiResponse = response.generate(false, 'Updated Successfully', {});
+    res.status(200).send(apiResponse);
+}
 
 module.exports = {
     test: test,
@@ -636,5 +711,9 @@ module.exports = {
     createReels: createReels,
     likePost: likePost,
     dislikePost: dislikePost,
-    commentPost: commentPost
+    commentPost: commentPost,
+    deleteAllReels: deleteAllReels,
+    getGameList : getGameList,
+    getPositionsList : getPositionsList,
+    updateProfile : updateProfile
 }

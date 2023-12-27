@@ -295,6 +295,45 @@ let commentPostValidate = async(req, res, next) => {
     }
 }
 
+let getPostionValidateSchema = Joi.object({
+    game_id : Joi.string().required()
+})
+
+let getPostionValidate = async(req, res, next) => {
+    try {
+        const value = await getPostionValidateSchema.validate(req.query);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+let updateProfileValidateSchema = Joi.object({
+    game_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    position_id : Joi.string().required()
+})
+
+let updateProfileValidate = async(req, res, next) => {
+    try {
+        const value = await updateProfileValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
 
 
 module.exports = {
@@ -308,5 +347,7 @@ module.exports = {
     createReelsValidate: createReelsValidate,
     likePostValidate: likePostValidate,
     dislikePostValidate: dislikePostValidate,
-    commentPostValidate: commentPostValidate
+    commentPostValidate: commentPostValidate,
+    getPostionValidate: getPostionValidate,
+    updateProfileValidate: updateProfileValidate
 }
