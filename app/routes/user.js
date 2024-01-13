@@ -31,4 +31,8 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-game-list`, userController.getGameList);
     app.post(`${baseUrl}/get-position-list`, validator.getPostionValidate, userController.getPositionsList);
     app.post(`${baseUrl}/update-profile`, validator.updateProfileValidate, userController.updateProfile);
+    app.post(`${baseUrl}/add-game`, validator.addGameValidate, userController.addGame);
+    app.post(`${baseUrl}/add-position`, validator.addPositionValidate, userController.addPosition);
+    app.post(`${baseUrl}/add-group`, validator.addGroupValidate, userController.addGroup);
+    app.get(`${baseUrl}/get-user-groups`, validator.getUserGroupListValidate,  userController.getUserGroupList);
 };

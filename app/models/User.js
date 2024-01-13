@@ -30,6 +30,42 @@ let userSchema = new Schema({
     type: String,
     default: "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg"
   },
+  name : {
+    type: String,
+    default : ''
+  },
+  dob : {
+    type: String,
+    default : ''
+  },
+  height : {
+    type: String,
+    default : ''
+  },
+  width : {
+    type: String,
+    default : ''
+  },
+  country : {
+    type: String,
+    default : ''
+  },
+  city : {
+    type: String,
+    default : ''
+  },
+  competition_won : {
+    type: Array,
+    default : []
+  },
+  previous_teams : {
+    type: Array,
+    default : []
+  },
+  previous_coaches : {
+    type: Array,
+    default : []
+  },
   user_type:{
     type: Number,
     default:1

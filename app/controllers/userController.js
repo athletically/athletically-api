@@ -19,6 +19,11 @@ const path = require('path');
 const postModel = mongoose.model('Post');
 const likeModel = mongoose.model('Like');
 const commentModel = mongoose.model('Comment');
+const gameModel = mongoose.model('Game');
+const positionModel = mongoose.model('Position');
+const userGroupMappingTable = mongoose.model('Group_user_mapping');
+const chatModel = mongoose.model('Chat');
+const groupModel = mongoose.model('Group');
 
 AWS.config.update({
   accessKeyId: process.env.AWS_KEY,
@@ -628,74 +633,173 @@ const deleteAllReels = async(req, res) => {
 
 
 const getGameList = async(req, res) => {
-
-    const gameList = [
-        {
-            id : 'y12lxsj7282541225312wj8',
-            name : 'Cricket'
-        },
-        {
-            id : 'y12lxsj7282541225312wj9',
-            name : 'Football'
-        },
-        {
-            id : 'y12lxsj2282541225312wj1',
-            name : 'Kabadi'
-        },
-        {
-            id : 'y12lxsj7282541225312io1',
-            name : 'Hockey'
-        },
-        {
-            id : 'y12lxsj728254122531ckd2',
-            name : 'Tennis'
-        }
-    ];
-    
-    let apiResponse = response.generate(false, 'Game List', gameList);
-    res.status(200).send(apiResponse);
+    try {
+        const gameList = await gameModel.find({status : 'active'}, 'name');
+        let apiResponse = response.generate(false, 'Game List', gameList);
+        res.status(200).send(apiResponse);        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
 }
 
 const getPositionsList = async(req, res) => {
 
-    const gameList = [
-        {
-            id : 'y12lxsj7282541225k1l29s',
-            name : 'GoalKeeper'
-        },
-        {
-            id : 'ersdxsj7282541225312o1a',
-            name : 'Center Back'
-        },
-        {
-            id : 'ersdxsj728254122531df1a',
-            name : 'Right Back'
-        },
-        {
-            id : 'ersdxsj7282541225312129',
-            name : 'Left Back'
-        },
-        {
-            id : 'ersdxsj72825412253l1axdd',
-            name : 'Center Midfielder'
-        },
-        {
-            id : 'ersdxsj72825412253l18512',
-            name : 'Attacking Midfielder'
-        },
-        {
-            id : 'ersdxsj72825412253lol12',
-            name : 'Attacking Forward'
-        },
-    ];
-    
-    let apiResponse = response.generate(false, 'Position List', gameList);
-    res.status(200).send(apiResponse);
+    try {
+        const positionList = await positionModel.find({game_id : new mongoose.Types.ObjectId(req.query.game_id), status : 'active'}, 'name');
+        let apiResponse = response.generate(false, 'Position List', positionList);
+        res.status(200).send(apiResponse);        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
 }
 
 const updateProfile = async(req, res) => {
-    let apiResponse = response.generate(false, 'Updated Successfully', {});
-    res.status(200).send(apiResponse);
+    try {
+        const user_id = req.body.user_id;
+        const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id) });
+
+        if(!finduser){
+            let apiResponse = response.generate(true, 'User not found', {});
+            res.status(200).send(apiResponse);
+            return;
+        }
+
+        finduser.name = (req.body.hasOwnProperty('name')) ? req.body.name : undefined;
+        finduser.dob = (req.body.hasOwnProperty('dob')) ? req.body.dob : undefined;
+        finduser.height = (req.body.hasOwnProperty('height')) ? req.body.height : undefined;
+        finduser.width = (req.body.hasOwnProperty('width')) ? req.body.width : undefined;
+        finduser.country = (req.body.hasOwnProperty('country')) ? req.body.country : undefined;
+        finduser.city = (req.body.hasOwnProperty('city')) ? req.body.city : undefined;
+        finduser.competition_won = (req.body.hasOwnProperty('competition_won')) ? req.body.competition_won : undefined;
+        finduser.previous_teams = (req.body.hasOwnProperty('previous_teams')) ? req.body.previous_teams : undefined;
+        finduser.previous_coaches = (req.body.hasOwnProperty('previous_coaches')) ? req.body.previous_coaches : undefined;
+
+        await finduser.save();
+
+        const game_id = req.body.game_id;
+        const position_id = req.body.position_id;
+
+        if(game_id && position_id){
+            const groups = await groupModel.find({ game_id : game_id, position_id : position_id, status : 'active' });
+            if(groups.length > 0){
+                await Promise.all(groups.map(async group => {
+                    let findGroup = await userGroupMappingTable.findOne({user_id : user_id, group_id : group._id});
+                    if(findGroup && findGroup.status === 'inactive'){
+                        findGroup.status = 'active';
+                        await findGroup.save();
+                    }
+                    else if(!findGroup){
+                        let newGroupUserMapping = new userGroupMappingTable({
+                            user_id : user_id,
+                            group_id : group._id
+                        })
+                        await newGroupUserMapping.save();
+                    }
+                }))
+            }
+        }
+
+        let apiResponse = response.generate(false, 'Updated Successfully', {});
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(false, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const addGame = async(req, res) => {
+    try{
+        const newGame = new gameModel({
+            name : req.body.game_name
+        })
+        await newGame.save();
+
+        let apiResponse = response.generate(false, 'Added Successfully', {});
+        res.status(200).send(apiResponse);
+    }
+    catch(error){
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const addPosition = async(req, res) => {
+    try{
+        const newPosition = new positionModel({
+            game_id : req.body.game_id,
+            name : req.body.position_name
+        })
+        await newPosition.save();
+
+        let apiResponse = response.generate(false, 'Added Successfully', {});
+        res.status(200).send(apiResponse);
+    }
+    catch(error){
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const addGroup = async(req, res) => {
+    try{
+        const newGroup = new groupModel({
+            game_id : req.body.game_id,
+            position_id : req.body.position_id,
+            name : req.body.group_name
+        })
+        await newGroup.save();
+
+        let apiResponse = response.generate(false, 'Added Successfully', {});
+        res.status(200).send(apiResponse);
+    }
+    catch(error){
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getUserGroupList = async(req, res) => {
+    try {
+        const user_id = req.query.user_id;
+        const groups = await userGroupMappingTable.aggregate([
+            {
+              $match: {
+                user_id : new mongoose.Types.ObjectId(user_id),
+                status : 'active'
+              }
+            },
+            {
+              $lookup: {
+                from: 'groups',
+                localField: "group_id",
+                foreignField: "_id",
+                as: "group"
+              }
+            },
+            {
+              $unwind: "$group"
+            }
+        ])
+        if(groups.length < 1){
+            let apiResponse = response.generate(true, "User has no active group. Update profile or request admin to create a group", []);
+            res.status(200).send(apiResponse);
+            return;
+        }
+        let returndata = [];
+        await Promise.all(groups.map(async group => {
+            let temp = {};
+            temp.group_id = group.group._id;
+            temp.group_name = group.group.name;
+            returndata.push(temp);
+        }))
+        let apiResponse = response.generate(false, "User group list found", returndata);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
 }
 
 module.exports = {
@@ -715,5 +819,9 @@ module.exports = {
     deleteAllReels: deleteAllReels,
     getGameList : getGameList,
     getPositionsList : getPositionsList,
-    updateProfile : updateProfile
+    updateProfile : updateProfile,
+    addGame: addGame,
+    addPosition: addPosition,
+    addGroup: addGroup,
+    getUserGroupList: getUserGroupList
 }

@@ -315,6 +315,15 @@ let getPostionValidate = async(req, res, next) => {
 }
 
 let updateProfileValidateSchema = Joi.object({
+    name : Joi.string(),
+    dob : Joi.string(),
+    height : Joi.string(),
+    width : Joi.string(),
+    country : Joi.string(),
+    city : Joi.string(),
+    competition_won : Joi.array(),
+    previous_teams : Joi.array(),
+    previous_coaches : Joi.array(),
     game_id : Joi.string().required(),
     user_id : Joi.string().required(),
     position_id : Joi.string().required()
@@ -335,6 +344,85 @@ let updateProfileValidate = async(req, res, next) => {
     }
 }
 
+let addGameSchema = Joi.object({
+    game_name : Joi.string().required(),
+})
+
+let addGameValidate = async(req, res, next) => {
+    try {
+        const value = await addGameSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+
+let addPositionSchema = Joi.object({
+    game_id : Joi.string().required(),
+    position_name : Joi.string().required(),
+})
+
+let addPositionValidate = async(req, res, next) => {
+    try {
+        const value = await addPositionSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+let addGroupSchema = Joi.object({
+    game_id : Joi.string().required(),
+    position_id : Joi.string().required(),
+    group_name : Joi.string().required(),
+})
+
+let addGroupValidate = async(req, res, next) => {
+    try {
+        const value = await addGroupSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+let getUserGroupListSchema = Joi.object({
+    user_id : Joi.string().required()
+})
+
+let getUserGroupListValidate = async(req, res, next) => {
+    try {
+        const value = await getUserGroupListSchema.validate(req.query);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
 
 module.exports = {
     loginValidate: loginValidate,
@@ -349,5 +437,9 @@ module.exports = {
     dislikePostValidate: dislikePostValidate,
     commentPostValidate: commentPostValidate,
     getPostionValidate: getPostionValidate,
-    updateProfileValidate: updateProfileValidate
+    updateProfileValidate: updateProfileValidate,
+    addGameValidate: addGameValidate,
+    addPositionValidate: addPositionValidate,
+    addGroupValidate: addGroupValidate,
+    getUserGroupListValidate: getUserGroupListValidate
 }
