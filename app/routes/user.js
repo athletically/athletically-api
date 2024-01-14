@@ -35,4 +35,8 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/add-position`, validator.addPositionValidate, userController.addPosition);
     app.post(`${baseUrl}/add-group`, validator.addGroupValidate, userController.addGroup);
     app.get(`${baseUrl}/get-user-groups`, validator.getUserGroupListValidate,  userController.getUserGroupList);
+    app.post(`${baseUrl}/upload-match`, upload.single('match'), validator.createReelsValidate, userController.addMatches);
+    app.get(`${baseUrl}/get-user-matches`, validator.getUserGroupListValidate,  userController.getUserMatches);
+    app.get(`${baseUrl}/get-user-profile`, validator.getUserGroupListValidate,  userController.getUserProfileData);
+    app.get(`${baseUrl}/get-explore`, validator.getUserGroupListValidate,  userController.getExplore);
 };

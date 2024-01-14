@@ -331,7 +331,7 @@ const homePageReels = async (req, res) => {
         ]);
 
         if(rows.length < 1){
-            let apiResponse = response.generate(false, 'No Reels not found', []);
+            let apiResponse = response.generate(false, 'No Reels found', []);
             res.status(200).send(apiResponse);
         }
 
@@ -346,7 +346,7 @@ const homePageReels = async (req, res) => {
             temp.reels = [];
 
             row.reels.forEach(reel => {
-                if(reel.status === 'active'){
+                if(reel.status === 'active' && reel.type != 'match'){
                     temp.reels.push({
                         title : reel.text,
                         url : reel.reel_link,
@@ -361,82 +361,7 @@ const homePageReels = async (req, res) => {
                 returndata.push(temp);
         })
 
-        
-
-
-
-        let ret = {
-            error: false,
-            message: "Homepage Reels",
-            data: [
-                {
-                    image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
-                    name: "Rajdeep Adhikary",
-                    id: "65084a48b5c351c3bdbd492b",
-                    username: "rajdeep",
-                    reels: [
-                        {
-                            title: "dummy title 1",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb843",
-                            likes: 0,
-                            comment: 0
-                        },
-                        {
-                            title: "dummy title 3",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb844",
-                            likes: 7,
-                            comment: 2
-                        }
-                    ]
-                },
-                {
-                    image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
-                    name: "Rahul Sharma",
-                    id: "65084a48b5c35213bdbd492b",
-                    username: "rahul",
-                    reels: [
-                        {
-                            title: "dummy title 2",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb843",
-                            likes: 10,
-                            comment: 6
-                        },
-                        {
-                            title: "dummy title 4",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb844",
-                            likes: 71,
-                            comment: 22
-                        }
-                    ]
-                },
-                {
-                    image: "https://f005.backblazeb2.com/file/athletically/user-image/user.jpg",
-                    name: "Anuvab Singh",
-                    id: "65084a48b5c351c3bdbd444",
-                    username: "anuvab",
-                    reels: [
-                        {
-                            title: "dummy title 5",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb843",
-                            likes: 11,
-                            comment: 0
-                        },
-                        {
-                            title: "dummy title 7",
-                            url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1057e2b02391eb94_d20231108_m163117_c005_v0501014_t0011_u01699461077139",
-                            id: "651850485d97800148bbb844",
-                            likes: 1,
-                            comment: 3
-                        }
-                    ]
-                }
-            ]
-        }
+    
         let apiResponse = response.generate(false, 'Reels Found', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
@@ -473,48 +398,6 @@ let getAllReelsOfUser = async(req, res) => {
             })
         })
 
-        let ret = {
-            error: false,
-            message: "Homepage Reels",
-            data: [
-                {
-                    title: "dummy title 1",
-                    url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f11542ef257e1f2eb_d20231002_m171531_c005_v0501013_t0032_u01696266931483",
-                    id: "651850485d97800148bbb841",
-                    likes: 1,
-                    comment: 2
-                },
-                {
-                    title: "dummy title 2",
-                    url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1067c3389f18ca42_d20231002_m171525_c005_v0501004_t0038_u01696266925392",
-                    id: "651850485d97800148bbb847",
-                    likes: 7,
-                    comment: 2
-                },
-                {
-                    title: "dummy title 3",
-                    url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f10310fdcd5249cc3_d20231002_m171412_c005_v0501010_t0014_u01696266852544",
-                    id: "651850485d97800148bbb843",
-                    likes: 5,
-                    comment: 12
-                },
-                {
-                    title: "dummy title 4",
-                    url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f11120602d3e24cca_d20231002_m171434_c005_v0501009_t0043_u01696266874697",
-                    id: "651850485d97800148bbb849",
-                    likes: 10,
-                    comment: 12
-                },
-                {
-                    title: "dummy title 5",
-                    url: "https://f005.backblazeb2.com/b2api/v1/b2_download_file_by_id?fileId=4_z2af10e0059b5ff1887ad031a_f1199fdc891b5626f_d20231002_m171453_c005_v0501013_t0058_u01696266893544",
-                    id: "651850485d97800148bbb840",
-                    likes: 17,
-                    comment: 2
-                }
-                    
-            ]
-        }
         let apiResponse = response.generate(false, 'All Reels Of User', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
@@ -802,6 +685,143 @@ const getUserGroupList = async(req, res) => {
     }
 }
 
+const addMatches = async(req, res) => {
+    try {
+        const bucketName = process.env.S3_BUCKET;
+        const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
+        const fileContent = req.file.buffer;
+
+        const params = {
+            Bucket: bucketName,
+            Key: `matches/${fileName}`,
+            Body: fileContent,
+            ContentType: 'video/mp4'
+        };
+
+        s3.putObject(params, async (err, data) => {
+            if (err) {
+                let apiResponse = response.generate(true, 'File upload failed', err);
+                console.error('Error uploading file:', err);
+                res.status(200).send(apiResponse);
+            } else {
+                const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/matches/${fileName}`;
+                const newPost = new postModel({
+                    'user_id' : req.body.user_id,
+                    'reel_link' : objectUrl,
+                    'text' : req.body.post,
+                    'type' : 'match',
+                    'status' : 'active',
+                    'created_on' : Date.now()
+                });
+
+                const added = await newPost.save();
+
+                let apiResponse = response.generate(false, 'File uploaded successfully', added);
+                console.log('File uploaded successfully:', data);
+                res.status(200).send(apiResponse);
+            }
+        });
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getUserMatches = async(req, res) => {
+    try {
+        let user_id = req.query.user_id;
+
+        let rawdata = await postModel.find({ user_id : user_id, type : 'match', status : 'active' });
+
+
+        let returndata = [];
+
+        if(rawdata.length < 1){
+            let apiResponse = response.generate(false, 'No match of the user is found', []);
+            res.status(200).send(apiResponse);
+            return;
+        }
+
+        rawdata.forEach(row => {
+            returndata.push({
+                id : row._id,
+                title : row.text,
+                url : row.reel_link,
+                likes : row.likes,
+                comment : 0
+            })
+        })
+        
+        let apiResponse = response.generate(false, 'All Matches Of User', returndata);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getUserProfileData = async(req, res) => {
+    try {
+        const user_id = req.query.user_id;
+
+        const userdtls = await UserModel.findById(user_id).lean();
+
+        delete userdtls.__v;
+        delete userdtls.password;
+
+        let apiResponse = response.generate(false, 'User details', userdtls);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getExplore = async(req, res) => {
+    try {
+        const user_id = req.query.user_id;
+
+        const reels = await postModel.aggregate([
+            {
+                $match: {
+                //   type : '',
+                  status : 'active'
+                }
+            },
+            {
+                $sample : { size : 100 }
+            }
+        ])
+
+        const users = await UserModel.aggregate([
+            {
+                $match: {
+                  is_active : true
+                }
+            },
+            {
+                $sample : { size : 10 }
+            }
+        ])
+
+        await Promise.all(users.map(async user => {
+            delete user.__v;
+            delete user.password;
+            return user;
+        }))
+
+        const returndata = {reels: reels, users:  users };
+
+        let apiResponse = response.generate(false, 'Explore Section data', returndata);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     test: test,
     login: login,
@@ -823,5 +843,9 @@ module.exports = {
     addGame: addGame,
     addPosition: addPosition,
     addGroup: addGroup,
-    getUserGroupList: getUserGroupList
+    getUserGroupList: getUserGroupList,
+    addMatches : addMatches,
+    getUserMatches: getUserMatches,
+    getUserProfileData: getUserProfileData,
+    getExplore: getExplore
 }

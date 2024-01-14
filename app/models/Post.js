@@ -28,6 +28,10 @@ let postSchema = new Schema({
     type: Number,
     default : 0
   },
+  type: {
+    type: String,
+    default: ''
+  },
   status:{
     type: String,
     default : 'active'
