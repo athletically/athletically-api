@@ -42,7 +42,7 @@ let login = async (req, res) => {
 
     try {
         console.log('body ', req.body);
-        let finduser = await UserModel.findOne({ username: req.body.username }).select('-__v -_id').lean();
+        let finduser = await UserModel.findOne({ username: req.body.username }).select('-__v _id').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(404);
@@ -55,6 +55,7 @@ let login = async (req, res) => {
                 throw new Error('Authorization Failed!');
             } else {
                 let payload = {
+                    user_id : finduser._id,
                     username: finduser.username,
                     email: finduser.email,
                     user_type: finduser.user_type,
