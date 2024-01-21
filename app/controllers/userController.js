@@ -1,5 +1,6 @@
 const response = require('./../libs/responseLib')
-const check = require('../libs/checkLib')
+const check = require('../libs/checkLib');
+const fs = require('fs');
 const appConfig = require('../../config/appConfig');
 const time = require('../libs/timeLib');
 const otpLib = require('../libs/otpLib');
@@ -686,47 +687,51 @@ const getUserGroupList = async(req, res) => {
     }
 }
 
-const addMatches = async(req, res) => {
+const addMatches = async (req, res) => {
     try {
         const bucketName = process.env.S3_BUCKET;
         const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
-        const fileContent = req.file.buffer;
+        const filePath = req.file.path;
+
+        // Create a readable stream from the file
+        const fileStream = fs.createReadStream(filePath);
 
         const params = {
             Bucket: bucketName,
             Key: `matches/${fileName}`,
-            Body: fileContent,
+            Body: fileStream,
             ContentType: 'video/mp4'
         };
 
-        s3.putObject(params, async (err, data) => {
-            if (err) {
-                let apiResponse = response.generate(true, 'File upload failed', err);
-                console.error('Error uploading file:', err);
-                res.status(200).send(apiResponse);
-            } else {
-                const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/matches/${fileName}`;
-                const newPost = new postModel({
-                    'user_id' : req.body.user_id,
-                    'reel_link' : objectUrl,
-                    'text' : req.body.post,
-                    'type' : 'match',
-                    'status' : 'active',
-                    'created_on' : Date.now()
-                });
+        const uploadParams = { ...params, Body: fileStream };
+        const uploadResult = await s3.upload(uploadParams).promise();
 
-                const added = await newPost.save();
-
-                let apiResponse = response.generate(false, 'File uploaded successfully', added);
-                console.log('File uploaded successfully:', data);
-                res.status(200).send(apiResponse);
-            }
+        const objectUrl = uploadResult.Location;
+        const newPost = new postModel({
+            'user_id': req.body.user_id,
+            'reel_link': objectUrl,
+            'text': req.body.post,
+            'type': 'match',
+            'status': 'active',
+            'created_on': Date.now()
         });
+
+        const added = await newPost.save();
+
+        let apiResponse = response.generate(false, 'File uploaded successfully', added);
+        console.log('File uploaded successfully:', uploadResult);
+        res.status(200).send(apiResponse);
     } catch (error) {
-        let apiResponse = response.generate(true, error.message, {});
+        console.error('Error uploading file:', error);
+        let apiResponse = response.generate(true, 'File upload failed', error.message || {});
         res.status(500).send(apiResponse);
+    } finally {
+        // Clean up: Delete the temporary file
+        if (req.file && req.file.path) {
+            fs.unlinkSync(req.file.path);
+        }
     }
-}
+};
 
 const getUserMatches = async(req, res) => {
     try {
@@ -791,7 +796,7 @@ const getExplore = async(req, res) => {
                 }
             },
             {
-                $sample : { size : 100 }
+                $sample : { size : 50 }
             }
         ])
 
@@ -812,7 +817,10 @@ const getExplore = async(req, res) => {
             return user;
         }))
 
-        const returndata = {reels: reels, users:  users };
+        const returndata = [];
+        returndata.push(reels);
+        returndata.push(users);
+        //  {reels: reels, users:  users };
 
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
         res.status(200).send(apiResponse);

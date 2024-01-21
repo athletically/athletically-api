@@ -1,4 +1,5 @@
 const fs = require('fs');
+const os = require('os');
 const path = require('path');
 const userController = require('../controllers/userController');
 const appConfig = require("./../../config/appConfig");
@@ -9,6 +10,17 @@ const multer = require('multer');
 // Configure multer for handling form-data
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
+
+const storagLarge = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, os.tmpdir()); // Store files in the system's temporary directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, `${Date.now().toString()}${path.extname(file.originalname)}`);
+    }
+});
+
+const uploadLarge = multer({ storage: storagLarge });
 
 module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}`;
@@ -35,7 +47,7 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/add-position`, validator.addPositionValidate, userController.addPosition);
     app.post(`${baseUrl}/add-group`, validator.addGroupValidate, userController.addGroup);
     app.get(`${baseUrl}/get-user-groups`, validator.getUserGroupListValidate,  userController.getUserGroupList);
-    app.post(`${baseUrl}/upload-match`, upload.single('match'), validator.createReelsValidate, userController.addMatches);
+    app.post(`${baseUrl}/upload-match`, uploadLarge.single('match'), validator.createReelsValidate, userController.addMatches);
     app.get(`${baseUrl}/get-user-matches`, validator.getUserGroupListValidate,  userController.getUserMatches);
     app.get(`${baseUrl}/get-user-profile`, validator.getUserGroupListValidate,  userController.getUserProfileData);
     app.get(`${baseUrl}/get-explore`, validator.getUserGroupListValidate,  userController.getExplore);
