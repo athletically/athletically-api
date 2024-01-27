@@ -814,13 +814,31 @@ const getExplore = async(req, res) => {
         await Promise.all(users.map(async user => {
             delete user.__v;
             delete user.password;
+            delete user.is_active;
+            delete user.user_type;
+            delete user.created_on;
+            delete user.city;
+            delete user.competition_won;
+            delete user.country;
+            delete user.dob;
+            delete user.height;
+            delete user.previous_coaches;
+            delete user.previous_teams;
+            delete user.width;
+            delete user.password;
             return user;
         }))
 
         const returndata = {};
 
-        returndata.userDetails = users;
-        returndata.reels = reels;
+        returndata.users = [];
+        // returndata.userDetails = users;
+        // returndata.reels = reels;
+
+        returndata.users.push({
+            userDetails : users,
+            reels : reels
+        })
 
         //  {reels: reels, users:  users };
 
