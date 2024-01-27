@@ -796,7 +796,7 @@ const getExplore = async(req, res) => {
                 }
             },
             {
-                $sample : { size : 50 }
+                $sample : { size : 6 }
             }
         ])
 
@@ -807,7 +807,7 @@ const getExplore = async(req, res) => {
                 }
             },
             {
-                $sample : { size : 10 }
+                $sample : { size : 2 }
             }
         ])
 
@@ -817,9 +817,11 @@ const getExplore = async(req, res) => {
             return user;
         }))
 
-        const returndata = [];
-        returndata.push(reels);
-        returndata.push(users);
+        const returndata = {};
+
+        returndata.userDetails = users;
+        returndata.reels = reels;
+
         //  {reels: reels, users:  users };
 
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
