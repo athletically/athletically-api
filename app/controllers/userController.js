@@ -544,12 +544,36 @@ const updateProfile = async(req, res) => {
     try {
         const user_id = req.body.user_id;
         const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id) });
+        let objectUrl = '';
 
         if(!finduser){
             let apiResponse = response.generate(true, 'User not found', {});
             res.status(200).send(apiResponse);
             return;
         }
+
+        if(req.file){
+            const bucketName = process.env.S3_BUCKET;
+            const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
+            const filePath = req.file.path;
+
+            // Create a readable stream from the file
+            const fileStream = fs.createReadStream(filePath);
+
+            const params = {
+                Bucket: bucketName,
+                Key: `images/${fileName}`,
+                Body: fileStream,
+                ContentType: 'image/*'
+            };
+
+            const uploadParams = { ...params, Body: fileStream };
+            const uploadResult = await s3.upload(uploadParams).promise();
+
+            objectUrl = uploadResult.Location;
+        }
+        
+        req.body = JSON.parse(JSON.stringify(req.body));
 
         finduser.name = (req.body.hasOwnProperty('name')) ? req.body.name : undefined;
         finduser.dob = (req.body.hasOwnProperty('dob')) ? req.body.dob : undefined;
@@ -560,8 +584,9 @@ const updateProfile = async(req, res) => {
         finduser.competition_won = (req.body.hasOwnProperty('competition_won')) ? req.body.competition_won : undefined;
         finduser.previous_teams = (req.body.hasOwnProperty('previous_teams')) ? req.body.previous_teams : undefined;
         finduser.previous_coaches = (req.body.hasOwnProperty('previous_coaches')) ? req.body.previous_coaches : undefined;
+        finduser.image = (objectUrl !== '') ? objectUrl : undefined;
 
-        await finduser.save();
+        const updated = await finduser.save();
 
         const game_id = req.body.game_id;
         const position_id = req.body.position_id;
@@ -586,7 +611,7 @@ const updateProfile = async(req, res) => {
             }
         }
 
-        let apiResponse = response.generate(false, 'Updated Successfully', {});
+        let apiResponse = response.generate(false, 'Updated Successfully', updated);
         res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(false, error.message, {});
@@ -737,7 +762,7 @@ const getUserMatches = async(req, res) => {
     try {
         let user_id = req.query.user_id;
 
-        let rawdata = await postModel.find({ user_id : user_id, type : 'match', status : 'active' });
+        let rawdata = await postModel.find({ type : 'match', status : 'active' });
 
 
         let returndata = [];
@@ -851,6 +876,86 @@ const getExplore = async(req, res) => {
     }
 }
 
+
+const addPodcast = async (req, res) => {
+    try {
+        const bucketName = process.env.S3_BUCKET;
+        const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
+        const filePath = req.file.path;
+
+        // Create a readable stream from the file
+        const fileStream = fs.createReadStream(filePath);
+
+        const params = {
+            Bucket: bucketName,
+            Key: `podcast/${fileName}`,
+            Body: fileStream,
+            ContentType: 'video/mp4'
+        };
+
+        const uploadParams = { ...params, Body: fileStream };
+        const uploadResult = await s3.upload(uploadParams).promise();
+
+        const objectUrl = uploadResult.Location;
+        const newPost = new postModel({
+            'user_id': req.body.user_id,
+            'reel_link': objectUrl,
+            'text': req.body.post,
+            'type': 'podcast',
+            'status': 'active',
+            'created_on': Date.now()
+        });
+
+        const added = await newPost.save();
+
+        let apiResponse = response.generate(false, 'File uploaded successfully', added);
+        console.log('File uploaded successfully:', uploadResult);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        let apiResponse = response.generate(true, 'File upload failed', error.message || {});
+        res.status(500).send(apiResponse);
+    } finally {
+        // Clean up: Delete the temporary file
+        if (req.file && req.file.path) {
+            fs.unlinkSync(req.file.path);
+        }
+    }
+};
+
+const getPodcast = async(req, res) => {
+    try {
+        let user_id = req.query.user_id;
+
+        let rawdata = await postModel.find({ type : 'podcast', status : 'active' });
+
+
+        let returndata = [];
+
+        if(rawdata.length < 1){
+            let apiResponse = response.generate(false, 'No podcast is found', []);
+            res.status(200).send(apiResponse);
+            return;
+        }
+
+        rawdata.forEach(row => {
+            returndata.push({
+                id : row._id,
+                title : row.text,
+                url : row.reel_link,
+                likes : row.likes,
+                comment : 0
+            })
+        })
+        
+        let apiResponse = response.generate(false, 'All Matches Of User', returndata);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     test: test,
     login: login,
@@ -876,5 +981,7 @@ module.exports = {
     addMatches : addMatches,
     getUserMatches: getUserMatches,
     getUserProfileData: getUserProfileData,
-    getExplore: getExplore
+    getExplore: getExplore,
+    addPodcast : addPodcast,
+    getPodcast : getPodcast
 }

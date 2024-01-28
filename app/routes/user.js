@@ -42,7 +42,7 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/delete-all-reel`, userController.deleteAllReels);
     app.get(`${baseUrl}/get-game-list`, userController.getGameList);
     app.post(`${baseUrl}/get-position-list`, validator.getPostionValidate, userController.getPositionsList);
-    app.post(`${baseUrl}/update-profile`, validator.updateProfileValidate, userController.updateProfile);
+    app.post(`${baseUrl}/update-profile`, uploadLarge.single('image'), validator.updateProfileValidate, userController.updateProfile);
     app.post(`${baseUrl}/add-game`, validator.addGameValidate, userController.addGame);
     app.post(`${baseUrl}/add-position`, validator.addPositionValidate, userController.addPosition);
     app.post(`${baseUrl}/add-group`, validator.addGroupValidate, userController.addGroup);
@@ -51,4 +51,6 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-user-matches`, validator.getUserGroupListValidate,  userController.getUserMatches);
     app.get(`${baseUrl}/get-user-profile`, validator.getUserGroupListValidate,  userController.getUserProfileData);
     app.get(`${baseUrl}/get-explore`, validator.getUserGroupListValidate,  userController.getExplore);
+    app.post(`${baseUrl}/upload-podcast`, uploadLarge.single('podcast'), validator.createReelsValidate, userController.addPodcast);
+    app.get(`${baseUrl}/get-podcast`, validator.getUserGroupListValidate,  userController.getPodcast);
 };
