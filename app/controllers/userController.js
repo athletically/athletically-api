@@ -782,6 +782,8 @@ const getUserMatches = async(req, res) => {
                 comment : 0
             })
         })
+
+        returndata.unshift('MATCHES');
         
         let apiResponse = response.generate(false, 'All Matches Of User', returndata);
         res.status(200).send(apiResponse);
@@ -947,6 +949,8 @@ const getPodcast = async(req, res) => {
                 comment : 0
             })
         })
+
+        returndata.unshift('PODCASTS');
         
         let apiResponse = response.generate(false, 'All Matches Of User', returndata);
         res.status(200).send(apiResponse);
