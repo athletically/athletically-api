@@ -7,7 +7,7 @@ let isAuthorized = async (req, res, next) => {
   try{
     if (req.header('token') && !check.isEmpty(req.header('token'))) {
       let decoded = await token.verifyClaimWithoutSecret(req.header('token'));
-      req.user = decoded.data;
+      req.user = decoded.user;
       next();
     } else {
       let apiResponse = responseLib.generate(true,'AuthorizationToken Is Missing In Request',null);

@@ -424,6 +424,25 @@ let getUserGroupListValidate = async(req, res, next) => {
     }
 }
 
+let updateViewSchema = Joi.object({
+    reel_id : Joi.string().required()
+})
+
+let updateViewValidate = async(req, res, next) => {
+    try {
+        const value = await updateViewSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
@@ -441,5 +460,6 @@ module.exports = {
     addGameValidate: addGameValidate,
     addPositionValidate: addPositionValidate,
     addGroupValidate: addGroupValidate,
-    getUserGroupListValidate: getUserGroupListValidate
+    getUserGroupListValidate: getUserGroupListValidate,
+    updateViewValidate: updateViewValidate
 }

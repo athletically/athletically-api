@@ -960,6 +960,31 @@ const getPodcast = async(req, res) => {
     }
 }
 
+const updateView = async(req, res) => {
+    try {
+        let user_id = req.user._id;
+        let reel_id = req.body.reel_id;
+
+        let reel = await postModel.findById(reel_id);
+
+        if(!reel){
+            let apiResponse = response.generate(false, 'Reel not found', {});
+            res.status(200).send(apiResponse);
+        }
+
+        reel.views = parseInt(reel.views) + 1;
+
+        await reel.save();
+
+        let apiResponse = response.generate(false, 'Reel view +1 added', reel);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     test: test,
     login: login,
@@ -987,5 +1012,6 @@ module.exports = {
     getUserProfileData: getUserProfileData,
     getExplore: getExplore,
     addPodcast : addPodcast,
-    getPodcast : getPodcast
+    getPodcast : getPodcast,
+    updateView : updateView
 }

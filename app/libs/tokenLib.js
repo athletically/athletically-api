@@ -14,7 +14,7 @@ let generateToken = (data) => {
         iat: Date.now(),
         exp: Math.floor(Date.now()/1000) + config.sessionExpTime,
         sub: 'auth_token',
-        data: data
+        user: data
       }
       resolve(jwt.sign(claims, secretKey));      
     }catch(err){
