@@ -17,6 +17,8 @@ const notificationLib = require('../libs/notificationLib');
 const checkLib = require('../libs/checkLib');
 const AWS = require('aws-sdk');
 const path = require('path');
+const { tryCatch } = require('bull/lib/utils');
+const { object } = require('joi');
 const postModel = mongoose.model('Post');
 const likeModel = mongoose.model('Like');
 const commentModel = mongoose.model('Comment');
@@ -25,6 +27,7 @@ const positionModel = mongoose.model('Position');
 const userGroupMappingTable = mongoose.model('Group_user_mapping');
 const chatModel = mongoose.model('Chat');
 const groupModel = mongoose.model('Group');
+const followModel = mongoose.model('Follow');
 
 AWS.config.update({
   accessKeyId: process.env.AWS_KEY,
@@ -985,6 +988,36 @@ const updateView = async(req, res) => {
     }
 }
 
+// const get_leaderboard = async(req, res) => {
+//     try {
+//         let 
+//     } catch (error) {
+//         let apiResponse = response.generate(true, error.message, {});
+//         res.status(500).send(apiResponse);
+//     }
+// }
+
+const followUser = async(req, res) => {
+    try {
+        let user_id = req.user._id;
+        let followed_user_id = req.body.user_id;
+
+        let newFollowModel = new followModel({
+            followed_user_id : new mongoose.Types.ObjectId(followed_user_id),
+            follower_user_id : new mongoose.Types.ObjectId(user_id)
+        })
+
+        await newFollowModel.save(); 
+
+        let apiResponse = response.generate(false, 'Followed successfully', {});
+        res.status(200).send(apiResponse);
+        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     test: test,
     login: login,
@@ -1013,5 +1046,6 @@ module.exports = {
     getExplore: getExplore,
     addPodcast : addPodcast,
     getPodcast : getPodcast,
-    updateView : updateView
+    updateView : updateView,
+    followUser: followUser
 }

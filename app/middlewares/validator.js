@@ -443,6 +443,25 @@ let updateViewValidate = async(req, res, next) => {
     }
 }
 
+let followUserValidateSchema = Joi.object({
+    user_id : Joi.string().required()
+})
+
+let followUserValidate = async(req, res, next) => {
+    try {
+        const value = await followUserValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
@@ -461,5 +480,6 @@ module.exports = {
     addPositionValidate: addPositionValidate,
     addGroupValidate: addGroupValidate,
     getUserGroupListValidate: getUserGroupListValidate,
-    updateViewValidate: updateViewValidate
+    updateViewValidate: updateViewValidate,
+    followUserValidate: followUserValidate
 }

@@ -54,4 +54,5 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/upload-podcast`,  auth.isAuthorized, uploadLarge.single('podcast'), validator.createReelsValidate, userController.addPodcast);
     app.get(`${baseUrl}/get-podcast`,  auth.isAuthorized, validator.getUserGroupListValidate,  userController.getPodcast);
     app.post(`${baseUrl}/update-reel-views`, auth.isAuthorized, validator.updateViewValidate, userController.updateView);
+    app.post(`${baseUrl}/follow-user`, auth.isAuthorized, validator.followUserValidate, userController.followUser);
 };
