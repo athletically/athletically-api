@@ -6,7 +6,9 @@ const appConfig = require('../../config/appConfig');
 let isAuthorized = async (req, res, next) => {
   try{
     if (req.header('authorization') && !check.isEmpty(req.header('authorization'))) {
-      let decoded = await token.verifyClaimWithoutSecret(req.header('authorization'));
+      let token_str = req.header('authorization');
+      token_str = token_str.replace("Bearer ", "");
+      let decoded = await token.verifyClaimWithoutSecret(token_str);
       req.user = decoded.user;
       next();
     } else {
