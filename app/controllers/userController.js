@@ -1002,7 +1002,7 @@ const followUser = async(req, res) => {
         let user_id = req.user._id;
         let followed_user_id = req.body.user_id;
 
-        let isMapped = await newFollowModel.findOne({followed_user_id : new mongoose.Types.ObjectId(followed_user_id), follower_user_id : new mongoose.Types.ObjectId(follower_user_id)});
+        let isMapped = await followModel.findOne({followed_user_id : new mongoose.Types.ObjectId(followed_user_id), follower_user_id : new mongoose.Types.ObjectId(follower_user_id)});
 
         if(isMapped && isMapped.status === 'inactive'){
             isMapped.status = 'active';
