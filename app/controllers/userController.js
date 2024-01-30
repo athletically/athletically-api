@@ -1002,12 +1002,24 @@ const followUser = async(req, res) => {
         let user_id = req.user._id;
         let followed_user_id = req.body.user_id;
 
-        let newFollowModel = new followModel({
-            followed_user_id : new mongoose.Types.ObjectId(followed_user_id),
-            follower_user_id : new mongoose.Types.ObjectId(user_id)
-        })
+        let isMapped = await newFollowModel.findOne({followed_user_id : new mongoose.Types.ObjectId(followed_user_id), follower_user_id : new mongoose.Types.ObjectId(follower_user_id)});
 
-        await newFollowModel.save(); 
+        if(isMapped && isMapped.status === 'inactive'){
+            isMapped.status = 'active';
+            await isMapped.save();
+        }
+        else if(!isMapped){
+            let newFollowModel = new followModel({
+                followed_user_id : new mongoose.Types.ObjectId(followed_user_id),
+                follower_user_id : new mongoose.Types.ObjectId(user_id)
+            })
+    
+            await newFollowModel.save(); 
+        }
+        else if(isMapped && isMapped.status === 'active'){
+            isMapped.status = 'inactive';
+            await isMapped.save();
+        }
 
         let apiResponse = response.generate(false, 'Followed successfully', {});
         res.status(200).send(apiResponse);
