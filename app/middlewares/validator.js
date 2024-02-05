@@ -4,7 +4,7 @@ const Joi = require('joi').extend(require('@joi/date'));
 
 
 const customLoginValidateSchema = Joi.object({
-    username: Joi.string()
+    email: Joi.string()
         .required()
         .messages({
             'string.empty': `Username cannot be empty`,
@@ -21,12 +21,6 @@ const customLoginValidateSchema = Joi.object({
 });
 
 const customRegisterValidateSchema = Joi.object({
-    username: Joi.string()
-        .required()
-        .messages({
-            'string.empty': `Username cannot be empty`,
-            'any.required': `Please enter your username`
-          }),
     password: Joi.string()
         .max(20)
         .required()

@@ -46,7 +46,7 @@ let login = async (req, res) => {
 
     try {
         console.log('body ', req.body);
-        let finduser = await UserModel.findOne({ username: req.body.username }).select('-__v _id').lean();
+        let finduser = await UserModel.findOne({ email: req.body.email }).select('-__v _id').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(404);
@@ -80,15 +80,14 @@ let login = async (req, res) => {
 
 let register = async (req, res) => {
     try {
-        let finduser = await UserModel.findOne({ $or: [{ username: req.body.username }, { email: req.body.email }] }).select('-__v -_id').lean();
+        let finduser = await UserModel.findOne({ $or: [{ email: req.body.email }] }).select('-__v -_id').lean();
 
         if (!check.isEmpty(finduser)) {
             res.status(412);
-            throw new Error('Username or Email already in use!');
+            throw new Error('Email already in use!');
         };
 
         let newUser = new UserModel({
-            username: req.body.username,
             email: req.body.email.toLowerCase(),
             password: await passwordLib.hash(req.body.password),
             created_on: time.now()
