@@ -176,7 +176,7 @@ let verifyOTP = async (req, res) => {
 
 let resetPassword = async (req, res) => {
     try {
-        let finduser = await UserModel.findOne({ $or: [{ email: req.body.username }] }).select('-__v').lean();
+        let finduser = await UserModel.findOne({ $or: [{ email: req.body.email }] }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(412);
