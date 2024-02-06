@@ -111,11 +111,11 @@ let register = async (req, res) => {
 
 let sendOtpForgotPassword = async (req, res) => {
     try {
-        let finduser = await UserModel.findOne({ $or: [{ username: req.body.username }, { email: req.body.username }] }).select('-__v').lean();
+        let finduser = await UserModel.findOne({ $or: [{ email: req.body.email }] }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(412);
-            throw new Error('An account with this username or email is not found!');
+            throw new Error('An account with this email is not found!');
         };
         let email = finduser.email;
         let otp = otpLib.generateOtp(6);
@@ -150,11 +150,11 @@ let sendOtpForgotPassword = async (req, res) => {
 
 let verifyOTP = async (req, res) => {
     try {
-        let finduser = await UserModel.findOne({ $or: [{ username: req.body.username }, { email: req.body.username }] }).select('-__v').lean();
+        let finduser = await UserModel.findOne({ $or: [{ email: req.body.email }] }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(412);
-            throw new Error('An account with this username or email is not found!');
+            throw new Error('An account with this email is not found!');
         };
         let otp = req.body.otp;
 
@@ -176,11 +176,11 @@ let verifyOTP = async (req, res) => {
 
 let resetPassword = async (req, res) => {
     try {
-        let finduser = await UserModel.findOne({ $or: [{ username: req.body.username }, { email: req.body.username }] }).select('-__v').lean();
+        let finduser = await UserModel.findOne({ $or: [{ email: req.body.username }] }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(412);
-            throw new Error('An account with this username or email is not found!');
+            throw new Error('An account with this email is not found!');
         };
         let password = await passwordLib.hash(req.body.password);
 

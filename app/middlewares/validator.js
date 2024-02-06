@@ -38,20 +38,22 @@ const customRegisterValidateSchema = Joi.object({
 });
 
 const sendMailForgotPasswordValidateSchema = Joi.object({
-    username: Joi.string()
+    email: Joi.string().email()
         .required()
         .messages({
-            'string.empty': `Username cannot be empty`,
-            'any.required': `Please enter your username`
-        })
+            'string.email': `Please enter a valid email`,
+            'string.empty': `Email cannot be empty`,
+            'any.required': `Please enter your Email`
+        }),
 })
 
 const verifyOTPvalidateSchema = Joi.object({
-    username: Joi.string()
+    email: Joi.string().email()
         .required()
         .messages({
-            'string.empty': `Username cannot be empty`,
-            'any.required': `Please enter your username`
+            'string.email': `Please enter a valid email`,
+            'string.empty': `Email cannot be empty`,
+            'any.required': `Please enter your Email`
         }),
     otp: Joi.string()
         .required()
@@ -62,11 +64,12 @@ const verifyOTPvalidateSchema = Joi.object({
 })
 
 const resetPasswordvalidateSchema = Joi.object({
-    username: Joi.string()
+    email: Joi.string().email()
         .required()
         .messages({
-            'string.empty': `Username cannot be empty`,
-            'any.required': `Please enter your username`
+            'string.email': `Please enter a valid email`,
+            'string.empty': `Email cannot be empty`,
+            'any.required': `Please enter your Email`
         }),
     password: Joi.string()
         .required()
