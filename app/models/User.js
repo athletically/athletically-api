@@ -9,11 +9,6 @@ const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
 let userSchema = new Schema({
-  username: {
-    type: String,
-    default: '',
-    unique : true
-  },
   password: {
     type: String,
     default: ''
