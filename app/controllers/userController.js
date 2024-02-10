@@ -345,12 +345,12 @@ const homePageReels = async (req, res) => {
             let temp = {};
             temp.id = row._id;
             temp.name = (row.name !== undefined) ? row.name : row.username;
-            temp.username = row.username;
             temp.image = row.image;
             temp.reels = [];
 
+            let c = 0;
             row.reels.forEach(reel => {
-                if(reel.status === 'active' && reel.type != 'match'){
+                if(reel.status === 'active' && reel.type != 'match' && reel.type != 'podcast' && c < 2){
                     temp.reels.push({
                         title : reel.text,
                         url : reel.reel_link,
@@ -358,6 +358,7 @@ const homePageReels = async (req, res) => {
                         likes : reel.likes,
                         comment : 0
                     })
+                    c++;
                 }
             })
 
@@ -799,12 +800,31 @@ const getUserProfileData = async(req, res) => {
     try {
         const user_id = req.query.user_id;
 
-        const userdtls = await UserModel.findById(user_id).lean();
+        // const userdtls = await UserModel.findById(user_id).lean();
 
-        delete userdtls.__v;
-        delete userdtls.password;
+        let userdtls = await UserModel.aggregate([
+            {
+              $match: {
+                _id : new mongoose.Types.ObjectId(user_id),
+                is_active : true
+              }
+            },
+            {
+              $lookup: {
+                from: 'posts',
+                localField: '_id',
+                foreignField: 'user_id',
+                as: 'reels'
+              }
+            }
+        ]);
 
-        let apiResponse = response.generate(false, 'User details', userdtls);
+        // userdtls = userdtls[0];
+
+        delete userdtls[0].__v;
+        delete userdtls[0].password;
+
+        let apiResponse = response.generate(false, 'User details', userdtls[0]);
         res.status(200).send(apiResponse);
 
     } catch (error) {
