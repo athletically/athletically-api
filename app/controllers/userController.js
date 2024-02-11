@@ -58,11 +58,16 @@ let login = async (req, res) => {
                 res.status(401);
                 throw new Error('Authorization Failed!');
             } else {
+                const groups = await userGroupMappingTable.find({ user_id : new mongoose.Types.ObjectId(finduser._id)});
+                let isGrouped = false;
+                if(groups.length > 0)
+                    isGrouped = true;
                 let payload = {
                     user_id : finduser._id,
                     username: finduser.username,
                     email: finduser.email,
                     user_type: finduser.user_type,
+                    updated: isGrouped,
                     token: await tokenLib.generateToken(finduser)
                 };
                 let apiResponse = response.generate(false, 'logged in!', payload);
