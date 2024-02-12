@@ -52,7 +52,7 @@ let login = async (req, res) => {
             res.status(404);
             throw new Error('User not Registered!');
         };
-        if (await passwordLib.verify(req.body.password, finduser.password)) {
+        if (await passwordLib.verify(req.body.password, finduser.password)) {   
             console.log('verified!');
             if ((finduser.user_type != 1) || (!finduser.is_active)) {
                 res.status(401);
@@ -134,21 +134,21 @@ let sendOtpForgotPassword = async (req, res) => {
                     created_on: timeLib.now()
                 })
                 if (await newOTP.save()) {
-                    let apiResponse = response.generate(false, 'An OTP has been sent to your registered email.');
+                    let apiResponse = response.generate(false, `An OTP has been sent to your registered email id : ${email}.` , {email});
                     res.status(200).send(apiResponse);
                 }
                 else {
-                    let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.');
+                    let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.', {});
                     res.status(500).send(apiResponse);
                 }
             }
             else {
-                let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.');
+                let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.', {});
                 res.status(500).send(apiResponse);
             }
         })
     } catch (error) {
-        let apiResponse = response.generate(true, error.message, null);
+        let apiResponse = response.generate(true, error.message, {});
         res.send(apiResponse);
     }
 }
