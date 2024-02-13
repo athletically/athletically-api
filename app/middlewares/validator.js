@@ -35,6 +35,10 @@ const customRegisterValidateSchema = Joi.object({
             'string.empty': `Email cannot be empty`,
             'any.required': `Please enter your Email`
           }),
+    name: Joi.string().required().messages({
+        'string.empty': `Name cannot be empty`,
+        'any.required': `Please enter your Name`
+      }),
 });
 
 const sendMailForgotPasswordValidateSchema = Joi.object({

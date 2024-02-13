@@ -61,6 +61,10 @@ let userSchema = new Schema({
     type: Array,
     default : []
   },
+  score: {
+    type: Number,
+    default : 0
+  },
   user_type:{
     type: Number,
     default:1

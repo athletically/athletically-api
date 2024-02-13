@@ -93,6 +93,7 @@ let register = async (req, res) => {
         };
 
         let newUser = new UserModel({
+            name: req.body.name,
             email: req.body.email.toLowerCase(),
             password: await passwordLib.hash(req.body.password),
             created_on: time.now()
