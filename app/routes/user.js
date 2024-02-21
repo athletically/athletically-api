@@ -55,4 +55,5 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-podcast`,  auth.isAuthorized, validator.getUserGroupListValidate,  userController.getPodcast);
     app.post(`${baseUrl}/update-reel-views`, auth.isAuthorized, validator.updateViewValidate, userController.updateView);
     app.post(`${baseUrl}/follow-user`, auth.isAuthorized, validator.followUserValidate, userController.followUser);
+    app.post(`${baseUrl}/get-leaderboard`, auth.isAuthorized, validator.getLeaderboardValidate, userController.getLeaderboard);
 };

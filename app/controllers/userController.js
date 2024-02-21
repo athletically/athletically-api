@@ -29,6 +29,8 @@ const chatModel = mongoose.model('Chat');
 const groupModel = mongoose.model('Group');
 const followModel = mongoose.model('Follow');
 
+const DEFAULT_USER_IMAGE = "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg";
+
 AWS.config.update({
   accessKeyId: process.env.AWS_KEY,
   secretAccessKey: process.env.AWS_SECRET_KEY,
@@ -46,7 +48,7 @@ let login = async (req, res) => {
 
     try {
         console.log('body ', req.body);
-        let finduser = await UserModel.findOne({ email: req.body.email }).select('-__v _id').lean();
+        let finduser = await UserModel.findOne({ email: req.body.email }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(404);
@@ -54,7 +56,7 @@ let login = async (req, res) => {
         };
         if (await passwordLib.verify(req.body.password, finduser.password)) {   
             console.log('verified!');
-            if ((finduser.user_type != 1) || (!finduser.is_active)) {
+            if (!finduser.is_active) {
                 res.status(401);
                 throw new Error('Authorization Failed!');
             } else {
@@ -78,6 +80,7 @@ let login = async (req, res) => {
             throw new Error('incorrect password!');
         }
     } catch (err) {
+        console.log(err.message);
         let apiResponse = response.generate(true, err.message, null);
         res.send(apiResponse);
     }
@@ -593,7 +596,28 @@ const updateProfile = async(req, res) => {
         finduser.competition_won = (req.body.hasOwnProperty('competition_won')) ? req.body.competition_won : undefined;
         finduser.previous_teams = (req.body.hasOwnProperty('previous_teams')) ? req.body.previous_teams : undefined;
         finduser.previous_coaches = (req.body.hasOwnProperty('previous_coaches')) ? req.body.previous_coaches : undefined;
-        finduser.image = (objectUrl !== '') ? objectUrl : undefined;
+        finduser.awards = (req.body.hasOwnProperty('awards')) ? req.body.awards : undefined;
+        finduser.medals = (req.body.hasOwnProperty('medals')) ? req.body.medals : undefined;
+        finduser.previous_clubs = (req.body.hasOwnProperty('previous_clubs')) ? req.body.previous_clubs : undefined;
+        finduser.age = (req.body.hasOwnProperty('age')) ? req.body.age : undefined;
+        finduser.certifications = (req.body.hasOwnProperty('certifications')) ? req.body.certifications : undefined;
+        finduser.home_ground = (req.body.hasOwnProperty('home_ground')) ? req.body.home_ground : undefined;
+        finduser.map_link = (req.body.hasOwnProperty('map_link')) ? req.body.map_link : undefined;
+        finduser.team_size = (req.body.hasOwnProperty('team_size')) ? req.body.team_size : undefined;
+        finduser.managements = (req.body.hasOwnProperty('managements')) ? req.body.managements : undefined;
+        finduser.coaches = (req.body.hasOwnProperty('coaches')) ? req.body.coaches : undefined;
+        finduser.other_stuffs = (req.body.hasOwnProperty('other_stuffs')) ? req.body.other_stuffs : undefined;
+        finduser.players = (req.body.hasOwnProperty('players')) ? req.body.players : undefined;
+        finduser.titles = (req.body.hasOwnProperty('titles')) ? req.body.titles : undefined;
+        finduser.managements = (req.body.hasOwnProperty('managements')) ? req.body.managements : undefined;
+        finduser.alumni_players = (req.body.hasOwnProperty('alumni_players')) ? req.body.alumni_players : undefined;
+        finduser.active_competitions = (req.body.hasOwnProperty('active_competitions')) ? req.body.active_competitions : undefined;
+        finduser.org_type = (req.body.hasOwnProperty('org_type')) ? req.body.org_type : undefined;
+        finduser.org_desc = (req.body.hasOwnProperty('org_desc')) ? req.body.org_desc : undefined;  
+        finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : undefined;
+        finduser.game = (req.body.hasOwnProperty('game_id')) ? req.body.game_id : undefined;  
+        finduser.position = (req.body.hasOwnProperty('position_id')) ? req.body.position_id : undefined;
+        finduser.image = (objectUrl !== '') ? objectUrl : DEFAULT_USER_IMAGE;
 
         const updated = await finduser.save();
 
@@ -842,60 +866,105 @@ const getUserProfileData = async(req, res) => {
 const getExplore = async(req, res) => {
     try {
         const user_id = req.query.user_id;
-
-        const reels = await postModel.aggregate([
-            {
-                $match: {
-                //   type : '',
-                  status : 'active'
-                }
-            },
-            {
-                $sample : { size : 6 }
-            }
-        ])
-
-        const users = await UserModel.aggregate([
-            {
-                $match: {
-                  is_active : true
-                }
-            },
-            {
-                $sample : { size : 2 }
-            }
-        ])
-
-        await Promise.all(users.map(async user => {
-            delete user.__v;
-            delete user.password;
-            delete user.is_active;
-            delete user.user_type;
-            delete user.created_on;
-            delete user.city;
-            delete user.competition_won;
-            delete user.country;
-            delete user.dob;
-            delete user.height;
-            delete user.previous_coaches;
-            delete user.previous_teams;
-            delete user.width;
-            delete user.password;
-            return user;
-        }))
-
+        const search_string = req.query.search_string;
         const returndata = {};
 
-        returndata.users = [];
-        // returndata.userDetails = users;
-        // returndata.reels = reels;
+        if(!search_string){
+            const reels = await postModel.aggregate([
+                {
+                    $match: {
+                    //   type : '',
+                    status : 'active'
+                    }
+                },
+                {
+                    $sample : { size : 6 }
+                }
+            ])
 
-        returndata.users.push({
-            userDetails : users,
-            reels : reels
-        })
+            const users = await UserModel.aggregate([
+                {
+                    $match: {
+                    is_active : true
+                    }
+                },
+                {
+                    $sample : { size : 2 }
+                },
+                {
+                    $project: {
+                        name : 1,
+                        email : 1,
+                        image : 1,
+                    }
+                }
+            ])
 
-        //  {reels: reels, users:  users };
+            await Promise.all(users.map(async user => {
+                delete user.__v;
+                delete user.password;
+                delete user.is_active;
+                delete user.user_type;
+                delete user.created_on;
+                delete user.city;
+                delete user.competition_won;
+                delete user.country;
+                delete user.dob;
+                delete user.height;
+                delete user.previous_coaches;
+                delete user.previous_teams;
+                delete user.width;
+                delete user.password;
+                return user;
+            }))
+
+            returndata.users = [];
+            // returndata.userDetails = users;
+            // returndata.reels = reels;
+
+            returndata.users.push({
+                userDetails : users,
+                reels : reels
+            })
+        }
+        else{
+            const reels = await postModel.aggregate([
+                {
+                    $match: {
+                        text : { $regex: new RegExp(search_string, 'i') },
+                        status : 'active'
+                    }
+                }
+            ])
+
+            const users = await UserModel.aggregate([
+                {
+                    $match: {
+                        $or : [
+                            {name : { $regex: new RegExp(search_string, 'i') }},
+                            {email : { $regex: new RegExp(search_string, 'i') }}
+                        ],
+                        is_active : true
+                    }
+                },
+                {
+                    $project: {
+                        name : 1,
+                        email : 1,
+                        image : 1,
+                    }
+                }
+            ])
+
+            returndata.users = [];
+            // returndata.userDetails = users;
+            // returndata.reels = reels;
+
+            returndata.users.push({
+                userDetails : users,
+                reels : reels
+            })
+        }
 
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
         res.status(200).send(apiResponse);
@@ -1055,6 +1124,48 @@ const followUser = async(req, res) => {
     }
 }
 
+
+const getLeaderboard = async(req, res) => {
+    try {
+        const { filter, game_id, year } = req.body;
+        const users = await UserModel.aggregate([
+            {
+                $match : {
+                    game : game_id,
+                }
+            },
+            {
+                $sort : {
+                    score : -1
+                }
+            },
+            {
+                $project: {
+                    name : 1,
+                    email : 1,
+                    image : 1,
+                    score : 1
+                }
+            }
+        ])
+
+        if(users.length < 1){
+            let apiResponse = response.generate(false, 'No users found for your search', {});
+            return res.status(200).send(apiResponse);
+        }
+
+        
+        let apiResponse = response.generate(false, 'Users found and fetched', {users});
+        res.status(200).send(apiResponse);
+
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+
 module.exports = {
     test: test,
     login: login,
@@ -1084,5 +1195,6 @@ module.exports = {
     addPodcast : addPodcast,
     getPodcast : getPodcast,
     updateView : updateView,
-    followUser: followUser
+    followUser: followUser,
+    getLeaderboard: getLeaderboard
 }

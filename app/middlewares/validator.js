@@ -117,6 +117,7 @@ let loginValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -133,6 +134,7 @@ let registerValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -148,6 +150,7 @@ let sendMailForgotPasswordValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -163,6 +166,7 @@ let verifyOTPvalidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -178,6 +182,7 @@ let resetPasswordvalidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -193,6 +198,7 @@ let homepageReelsValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -208,6 +214,7 @@ let getAllReelsOfUserValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -224,6 +231,7 @@ let createReelsValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -245,6 +253,7 @@ let likePostValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -267,6 +276,7 @@ let dislikePostValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -290,6 +300,7 @@ let commentPostValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -309,6 +320,7 @@ let getPostionValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -319,7 +331,7 @@ let updateProfileValidateSchema = Joi.object({
     name : Joi.string(),
     dob : Joi.string(),
     height : Joi.string(),
-    width : Joi.string(),
+    weight : Joi.string(),
     country : Joi.string(),
     city : Joi.string(),
     competition_won : Joi.array(),
@@ -327,7 +339,25 @@ let updateProfileValidateSchema = Joi.object({
     previous_coaches : Joi.array(),
     game_id : Joi.string().required(),
     user_id : Joi.string().required(),
-    position_id : Joi.string().required()
+    user_type : Joi.string().required(),
+    position_id : Joi.string().required(),
+    awards : Joi.array(),
+    medals : Joi.array(),
+    previous_clubs : Joi.array(),
+    age : Joi.string(),
+    certifications : Joi.array(),
+    home_ground : Joi.string(),
+    map_link : Joi.string(),
+    team_size : Joi.string(),
+    managements : Joi.array(),
+    coaches : Joi.array(),
+    other_stuffs : Joi.array(),
+    players : Joi.array(),
+    titles : Joi.array(),
+    alumni_players : Joi.array(),
+    active_competitions : Joi.array(),
+    org_type : Joi.string(),
+    org_desc : Joi.string(),
 })
 
 let updateProfileValidate = async(req, res, next) => {
@@ -339,6 +369,7 @@ let updateProfileValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -358,6 +389,7 @@ let addGameValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -379,6 +411,7 @@ let addPositionValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -400,6 +433,7 @@ let addGroupValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -407,7 +441,8 @@ let addGroupValidate = async(req, res, next) => {
 }
 
 let getUserGroupListSchema = Joi.object({
-    user_id : Joi.string().required()
+    user_id : Joi.string().required(),
+    search_string : Joi.string().allow('')
 })
 
 let getUserGroupListValidate = async(req, res, next) => {
@@ -419,6 +454,7 @@ let getUserGroupListValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -438,6 +474,7 @@ let updateViewValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -457,6 +494,29 @@ let followUserValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+let getLeaderboardValidateSchema = Joi.object({
+    game_id : Joi.string().required(),
+    filter : Joi.string().valid('overall', 'state').required(),
+    year : Joi.string().required(),
+})
+
+let getLeaderboardValidate = async(req, res, next) => {
+    try {
+        const value = await getLeaderboardValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);
         res.send(apiResponse)
@@ -482,5 +542,6 @@ module.exports = {
     addGroupValidate: addGroupValidate,
     getUserGroupListValidate: getUserGroupListValidate,
     updateViewValidate: updateViewValidate,
-    followUserValidate: followUserValidate
+    followUserValidate: followUserValidate,
+    getLeaderboardValidate: getLeaderboardValidate
 }
