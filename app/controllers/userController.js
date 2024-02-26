@@ -558,6 +558,18 @@ const updateProfile = async(req, res) => {
         const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id) });
         let objectUrl = '';
 
+        if((req.body.user_type === 'player' || req.body.user_type === 'other') && (!req.body.hasOwnProperty('game_id') || req.body.game_id === '' || req.body.game_id === undefined)){
+            let apiResponse = response.generate(true, 'Game is required for user type Player or Other Personalities', {});
+            res.status(400).send(apiResponse);
+            return;
+        }
+
+        if((req.body.user_type === 'player' || req.body.user_type === 'other') && (!req.body.hasOwnProperty('position_id') || req.body.position_id === '' || req.body.position_id === undefined)){
+            let apiResponse = response.generate(true, 'Position is required for user type Player or Other Personalities', {});
+            res.status(400).send(apiResponse);
+            return;
+        }
+
         if(!finduser){
             let apiResponse = response.generate(true, 'User not found', {});
             res.status(200).send(apiResponse);
