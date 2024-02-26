@@ -564,8 +564,8 @@ const updateProfile = async(req, res) => {
             return;
         }
 
-        if((req.body.user_type === 'player' || req.body.user_type === 'other') && (req.body.position_id === '' || req.body.position_id === undefined)){
-            let apiResponse = response.generate(true, 'Position is required for user type Player or Other Personalities', {});
+        if((req.body.user_type === 'player') && (req.body.position_id === '' || req.body.position_id === undefined)){
+            let apiResponse = response.generate(true, 'Position is required for user type Player', {});
             res.status(400).send(apiResponse);
             return;
         }
