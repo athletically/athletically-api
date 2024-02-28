@@ -28,7 +28,8 @@ const userGroupMappingTable = mongoose.model('Group_user_mapping');
 const chatModel = mongoose.model('Chat');
 const groupModel = mongoose.model('Group');
 const followModel = mongoose.model('Follow');
-
+const eventModel = mongoose.model('Event');
+const orgTypeModel = mongoose.model('Org_type');
 const DEFAULT_USER_IMAGE = "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg";
 
 AWS.config.update({
@@ -630,6 +631,8 @@ const updateProfile = async(req, res) => {
         finduser.game = (req.body.hasOwnProperty('game_id')) ? req.body.game_id : undefined;  
         finduser.position = (req.body.hasOwnProperty('position_id')) ? req.body.position_id : undefined;
         finduser.image = (objectUrl !== '') ? objectUrl : DEFAULT_USER_IMAGE;
+        finduser.estd = (req.body.hasOwnProperty('estd')) ? req.body.estd : undefined;
+        finduser.key_personalities = (req.body.hasOwnProperty('key_personalities')) ? req.body.key_personalities : undefined;
 
         const updated = await finduser.save();
 
@@ -1177,6 +1180,47 @@ const getLeaderboard = async(req, res) => {
     }
 }
 
+const addOrgType = async(req, res) => {
+    try {
+        const { org_type_name } = req.body;
+
+        const newOrgType = new orgTypeModel({
+            org_type_name : org_type_name
+        })
+
+        await newOrgType.save();
+
+        let apiResponse = response.generate(false, "Organization Type added successfully", {});
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getOrgTypes = async(req, res) => {
+    try {
+        const allOrgTypes = await orgTypeModel.find({}).lean();
+
+        let apiResponse = response.generate(false, "Organization Type gets successfully", allOrgTypes);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }    
+}
+
+const addEvent = async(req, res) => {
+    try {
+        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 
 module.exports = {
     test: test,
@@ -1208,5 +1252,7 @@ module.exports = {
     getPodcast : getPodcast,
     updateView : updateView,
     followUser: followUser,
-    getLeaderboard: getLeaderboard
+    getLeaderboard: getLeaderboard,
+    getOrgTypes: getOrgTypes,
+    addOrgType: addOrgType
 }

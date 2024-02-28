@@ -144,6 +144,14 @@ let userSchema = new Schema({
     type: String,
     default : ""
   },
+  estd:{
+    type: String,
+    default:""
+  },
+  key_personalities : {
+    type: Array,
+    default : []
+  },
   game : {
     type: String,
     default : ""

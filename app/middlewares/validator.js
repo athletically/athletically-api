@@ -362,6 +362,7 @@ let updateProfileValidateSchema = Joi.object({
 
 let updateProfileValidate = async(req, res, next) => {
     try {
+        console.log(req.body);
         const value = await updateProfileValidateSchema.validate(req.body);
         if (value.hasOwnProperty('error')) {
             throw new Error(value.error);
