@@ -633,6 +633,7 @@ const updateProfile = async(req, res) => {
         finduser.image = (objectUrl !== '') ? objectUrl : DEFAULT_USER_IMAGE;
         finduser.estd = (req.body.hasOwnProperty('estd')) ? req.body.estd : undefined;
         finduser.key_personalities = (req.body.hasOwnProperty('key_personalities')) ? JSON.parse(req.body.key_personalities) : undefined;
+        finduser.type = (req.body.hasOwnProperty('type')) ? req.body.type : undefined;
 
         const updated = await finduser.save();
 
