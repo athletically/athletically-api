@@ -359,7 +359,8 @@ let updateProfileValidateSchema = Joi.object({
     org_type : Joi.string(),
     org_desc : Joi.string(),
     estd : Joi.string(),
-    key_parsonalities : Joi.string()
+    key_parsonalities : Joi.string(),
+    type : Joi.string()
 })
 
 let updateProfileValidate = async(req, res, next) => {
