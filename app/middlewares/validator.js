@@ -340,7 +340,7 @@ let updateProfileValidateSchema = Joi.object({
     game_id : Joi.string().allow(''),
     user_id : Joi.string().required(),
     user_type : Joi.string().valid('player', 'other', 'team', 'orgs').required(),
-    position_id : Joi.string(),
+    position_id : Joi.string().allow(''),
     awards : Joi.string().allow(''),
     medals : Joi.string().allow(''),
     previous_clubs : Joi.string().allow(''),
@@ -527,6 +527,37 @@ let getLeaderboardValidate = async(req, res, next) => {
     }
 }
 
+let addEventValidatorSchema = Joi.object({
+    user_id : Joi.string().required(),
+    event_title : Joi.string().required(),
+    event_desc : Joi.string().required(),
+    event_for : Joi.string().required(),
+    user_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    user_id : Joi.string().required(),
+    filter : Joi.string().valid('overall', 'state').required(),
+    year : Joi.string().required(),
+})
+
+let addEventValidator = async(req, res, next) => {
+    try {
+        const value = await addEventValidatorSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 module.exports = {
     loginValidate: loginValidate,
     registerValidate: registerValidate,
@@ -547,5 +578,6 @@ module.exports = {
     getUserGroupListValidate: getUserGroupListValidate,
     updateViewValidate: updateViewValidate,
     followUserValidate: followUserValidate,
-    getLeaderboardValidate: getLeaderboardValidate
+    getLeaderboardValidate: getLeaderboardValidate,
+    addEventValidator: addEventValidator
 }
