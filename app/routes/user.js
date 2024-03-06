@@ -56,4 +56,7 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/update-reel-views`, auth.isAuthorized, validator.updateViewValidate, userController.updateView);
     app.post(`${baseUrl}/follow-user`, auth.isAuthorized, validator.followUserValidate, userController.followUser);
     app.post(`${baseUrl}/get-leaderboard`, auth.isAuthorized, validator.getLeaderboardValidate, userController.getLeaderboard);
+    app.post(`${baseUrl}/add-event`, auth.isAuthorized, validator.addEventValidator, userController.addEvent);
+    app.post(`${baseUrl}/edit-event`, auth.isAuthorized, validator.editEventValidator, userController.editEvent);
+    app.get(`${baseUrl}/get-types-list`,  auth.isAuthorized,  userController.getOtherPersonalityTypeList);
 };

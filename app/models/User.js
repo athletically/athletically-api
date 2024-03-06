@@ -152,6 +152,10 @@ let userSchema = new Schema({
     type: Array,
     default : []
   },
+  type : {
+    type: String,
+    default: ""
+  },
   game : {
     type: String,
     default : ""
@@ -161,11 +165,11 @@ let userSchema = new Schema({
     default : ""
   },
   created_on :{
-    type:Date,
+    type:String,
     default: timeLib.getLocalTime()
   },
   updated_on :{
-    type:Date,
+    type:String,
     default: timeLib.getLocalTime()
   }
 })

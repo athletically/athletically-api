@@ -27,13 +27,17 @@ let eventSchema = new Schema({
   },
   coached_by: {
     type: String,
-    default : 0
+    default : ""
   },
   scouted_by: {
     type: String,
     default: ""
   },
   location: {
+    type: String,
+    required: true
+  },
+  map_link: {
     type: String,
     required: true
   },

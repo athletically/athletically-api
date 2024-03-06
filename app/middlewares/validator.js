@@ -532,14 +532,11 @@ let addEventValidatorSchema = Joi.object({
     event_title : Joi.string().required(),
     event_desc : Joi.string().required(),
     event_for : Joi.string().required(),
-    user_id : Joi.string().required(),
-    user_id : Joi.string().required(),
-    user_id : Joi.string().required(),
-    user_id : Joi.string().required(),
-    user_id : Joi.string().required(),
-    user_id : Joi.string().required(),
-    filter : Joi.string().valid('overall', 'state').required(),
-    year : Joi.string().required(),
+    scouted_by : Joi.string().allow(''),
+    location : Joi.string().required(),
+    map_link : Joi.string().required(),
+    coached_by : Joi.string().allow(''),
+    event_datetime : Joi.string().required(),
 })
 
 let addEventValidator = async(req, res, next) => {
@@ -557,6 +554,36 @@ let addEventValidator = async(req, res, next) => {
         res.send(apiResponse)
     }
 }
+
+let editEventValidatorSchema = Joi.object({
+    user_id : Joi.string().required(),
+    event_id : Joi.string().required(),
+    event_title : Joi.string(),
+    event_desc : Joi.string(),
+    event_for : Joi.string(),
+    scouted_by : Joi.string().allow(''),
+    location : Joi.string(),
+    map_link : Joi.string(),
+    coached_by : Joi.string().allow(''),
+    event_datetime : Joi.string(),
+})
+
+let editEventValidator = async(req, res, next) => {
+    try {
+        const value = await editEventValidatorSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     loginValidate: loginValidate,
@@ -579,5 +606,6 @@ module.exports = {
     updateViewValidate: updateViewValidate,
     followUserValidate: followUserValidate,
     getLeaderboardValidate: getLeaderboardValidate,
-    addEventValidator: addEventValidator
+    addEventValidator: addEventValidator,
+    editEventValidator: editEventValidator
 }

@@ -1215,6 +1215,96 @@ const getOrgTypes = async(req, res) => {
 
 const addEvent = async(req, res) => {
     try {
+        const user_id = req.body.user_id;
+        let finduser = await UserModel.findOne({ _id: user_id }).select('-__v').lean();
+        if(!finduser){
+            let apiResponse = response.generate(true, "User not found", {});
+            return res.status(500).send(apiResponse);
+        }
+        if(finduser.user_type !== 'team' ||finduser.user_type !== 'orgs'){
+            let apiResponse = response.generate(true, "Event can only be added by a club/team or organization", {});
+            return res.status(500).send(apiResponse);
+        }
+        const newEvent = new eventModel({
+            user_id : user_id,
+            event_title : req.body.event_title,
+            event_desc : req.body.event_desc,
+            event_for : req.body.event_for,
+            coached_by : req.body.coached_by,
+            scouted_by : req.body.scouted_by,
+            location : req.body.location,
+            map_link : req.body.map_link,
+            event_datetime : req.body.event_datetime
+        })
+
+        await newEvent.save();
+
+        let apiResponse = response.generate(false, "Event Added Successfully", newEvent);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const editEvent = async(req, res) => {
+    try {
+        const event_id = req.body.event_id;
+        let event = await event.findById(event_id);
+        if(!event){
+            let apiResponse = response.generate(true, "Event not found", {});
+            return res.status(500).send(apiResponse);
+        }
+        if(event.user_id.toString() !== req.body.user_id){
+            let apiResponse = response.generate(true, "User is not allowed to modify this event", {});
+            return res.status(500).send(apiResponse);
+        }
+
+        event.event_title = req.body.event_title,
+        event.event_desc = req.body.event_desc,
+        event.event_for = req.body.event_for,
+        event.coached_by = req.body.coached_by,
+        event.scouted_by = req.body.scouted_by,
+        event.location = req.body.location,
+        event.map_link = req.body.map_link,
+        event.event_datetime = req.body.event_datetime
+
+        await event.save();
+
+        let apiResponse = response.generate(false, "Event Modified Successfully", event);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+
+const getOtherPersonalityTypeList = async(req, res) => {
+    try {
+        let types = [
+            {
+                _id : '1',
+                type : 'Head Coach'
+            },
+            {
+                _id : '2',
+                type : 'Physio'
+            },
+            {
+                _id : '3',
+                type : 'Scout'
+            },
+            {
+                _id : '4',
+                type : 'Junior Coach'
+            },
+        ]
+
+        let apiResponse = response.generate(false, "List of all types", { types});
+        res.status(200).send(apiResponse);
         
     } catch (error) {
         let apiResponse = response.generate(true, error.message, {});
@@ -1255,5 +1345,8 @@ module.exports = {
     followUser: followUser,
     getLeaderboard: getLeaderboard,
     getOrgTypes: getOrgTypes,
-    addOrgType: addOrgType
+    addOrgType: addOrgType,
+    addEvent: addEvent,
+    editEvent: editEvent,
+    getOtherPersonalityTypeList : getOtherPersonalityTypeList
 }
