@@ -18,7 +18,7 @@ let orgTypeSchema = new Schema({
     default: "active"
   },
   created_on :{
-    type:Date,
+    type:String,
     default: timeLib.getLocalTime()
   }
 })

@@ -59,4 +59,5 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/add-event`, auth.isAuthorized, validator.addEventValidator, userController.addEvent);
     app.post(`${baseUrl}/edit-event`, auth.isAuthorized, validator.editEventValidator, userController.editEvent);
     app.get(`${baseUrl}/get-types-list`,  auth.isAuthorized,  userController.getOtherPersonalityTypeList);
+    app.get(`${baseUrl}/get-org-types`,  auth.isAuthorized,  userController.getOrgTypes);
 };

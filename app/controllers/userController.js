@@ -83,7 +83,7 @@ let login = async (req, res) => {
     } catch (err) {
         console.log(err.message);
         let apiResponse = response.generate(true, err.message, null);
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -115,7 +115,7 @@ let register = async (req, res) => {
 
     } catch (err) {
         let apiResponse = response.generate(true, err.message, null);
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -144,17 +144,17 @@ let sendOtpForgotPassword = async (req, res) => {
                 }
                 else {
                     let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.', {});
-                    res.status(500).send(apiResponse);
+                    res.status(200).send(apiResponse);
                 }
             }
             else {
-                let apiResponse = response.generate(true, 'Unable to send OTP. Try after sometimes.', {});
-                res.status(500).send(apiResponse);
+                let apiResponse = response.generate(true, 'Internal Server Error. Try after sometimes.', {});
+                res.status(200).send(apiResponse);
             }
         })
     } catch (error) {
         let apiResponse = response.generate(true, error.message, {});
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -176,11 +176,11 @@ let verifyOTP = async (req, res) => {
         }
         else {
             let apiResponse = response.generate(true, 'OTP verification failed.');
-            res.status(412).send(apiResponse);
+            res.status(200).send(apiResponse);
         }
     } catch (error) {
         let apiResponse = response.generate(true, error.message, null);
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -206,7 +206,7 @@ let resetPassword = async (req, res) => {
         }
     } catch (error) {
         let apiResponse = response.generate(true, error.message, null);
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -234,7 +234,7 @@ const getAllReels = async (req, res) => {
         res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, null);
-        res.send(apiResponse);
+        res.status(500).send(apiResponse);
     }
 }
 
