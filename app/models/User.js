@@ -68,8 +68,8 @@ let userSchema = new Schema({
   },
   user_type:{
     type: String,
-    enum: ["player", "other", "team", "orgs"],
-    default:"player"
+    enum: ["viewer","player", "other", "team", "orgs"],
+    default:"viewer"
   },
   awards : {
     type: Array,

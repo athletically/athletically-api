@@ -339,7 +339,7 @@ let updateProfileValidateSchema = Joi.object({
     previous_coaches : Joi.string().allow(''),
     game_id : Joi.string().allow(''),
     user_id : Joi.string().required(),
-    user_type : Joi.string().valid('player', 'other', 'team', 'orgs').required(),
+    user_type : Joi.string().valid('viewer','player', 'other', 'team', 'orgs').required(),
     position_id : Joi.string().allow(''),
     awards : Joi.string().allow(''),
     medals : Joi.string().allow(''),
