@@ -41,7 +41,7 @@ let eventSchema = new Schema({
     type: String,
     required: true
   },
-  map_link: {
+  event_datetime: {
     type: String,
     required: true
   },

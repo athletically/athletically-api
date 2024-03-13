@@ -1246,10 +1246,12 @@ const addEvent = async(req, res) => {
             let apiResponse = response.generate(true, "User not found", {});
             return res.status(500).send(apiResponse);
         }
-        if(finduser.user_type !== 'team' ||finduser.user_type !== 'orgs'){
+        
+        if(!['team', 'orgs'].includes(finduser.user_type)){
             let apiResponse = response.generate(true, "Event can only be added by a club/team or organization", {});
             return res.status(500).send(apiResponse);
         }
+        
         const newEvent = new eventModel({
             user_id : user_id,
             event_title : req.body.event_title,
@@ -1264,6 +1266,8 @@ const addEvent = async(req, res) => {
 
         await newEvent.save();
 
+        console.log(newEvent);
+
         let apiResponse = response.generate(false, "Event Added Successfully", newEvent);
         res.status(200).send(apiResponse);
 
@@ -1276,28 +1280,58 @@ const addEvent = async(req, res) => {
 const editEvent = async(req, res) => {
     try {
         const event_id = req.body.event_id;
-        let event = await event.findById(event_id);
+        let event = await eventModel.findById(event_id);
+        
         if(!event){
             let apiResponse = response.generate(true, "Event not found", {});
             return res.status(500).send(apiResponse);
         }
+        
         if(event.user_id.toString() !== req.body.user_id){
             let apiResponse = response.generate(true, "User is not allowed to modify this event", {});
             return res.status(500).send(apiResponse);
         }
-
-        event.event_title = req.body.event_title,
-        event.event_desc = req.body.event_desc,
-        event.event_for = req.body.event_for,
-        event.coached_by = req.body.coached_by,
-        event.scouted_by = req.body.scouted_by,
-        event.location = req.body.location,
-        event.map_link = req.body.map_link,
-        event.event_datetime = req.body.event_datetime
+        
+        event.event_title = (req.body.event_title) ? req.body.event_title : event.event_title,
+        event.event_desc = (req.body.event_desc) ? req.body.event_desc : event.event_desc,
+        event.event_for = (req.body.event_for) ? req.body.event_for : event.event_for,
+        event.coached_by = (req.body.coached_by) ? req.body.coached_by : event.coached_by,
+        event.scouted_by = (req.body.scouted_by) ? req.body.scouted_by : event.scouted_by,
+        event.location = (req.body.location) ? req.body.location : event.location,
+        event.map_link = (req.body.map_link) ? req.body.map_link : event.map_link,
+        event.event_datetime = (req.body.event_datetime) ? req.body.event_datetime : event.event_datetime,
 
         await event.save();
 
         let apiResponse = response.generate(false, "Event Modified Successfully", event);
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const deleteEvent = async(req, res) => {
+    try {
+        const event_id = req.body.event_id;
+        let event = await eventModel.findById(event_id);
+        
+        if(!event){
+            let apiResponse = response.generate(true, "Event not found", {});
+            return res.status(500).send(apiResponse);
+        }
+        
+        if(event.user_id.toString() !== req.body.user_id){
+            let apiResponse = response.generate(true, "User is not allowed to modify this event", {});
+            return res.status(500).send(apiResponse);
+        }
+        
+        event.status = 'deleted',
+
+        await event.save();
+
+        let apiResponse = response.generate(false, "Event Deleted Successfully", {});
         res.status(200).send(apiResponse);
 
     } catch (error) {
@@ -1356,5 +1390,6 @@ module.exports = {
     addOrgType: addOrgType,
     addEvent: addEvent,
     editEvent: editEvent,
-    getOtherPersonalityTypeList : getOtherPersonalityTypeList
+    getOtherPersonalityTypeList : getOtherPersonalityTypeList,
+    deleteEvent : deleteEvent
 }

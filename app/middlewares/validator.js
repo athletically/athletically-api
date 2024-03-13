@@ -536,7 +536,7 @@ let addEventValidatorSchema = Joi.object({
     location : Joi.string().required(),
     map_link : Joi.string().required(),
     coached_by : Joi.string().allow(''),
-    event_datetime : Joi.string().required(),
+    event_datetime : Joi.date().format('YYYY-MM-DD HH:mm').required(),
 })
 
 let addEventValidator = async(req, res, next) => {
@@ -565,12 +565,33 @@ let editEventValidatorSchema = Joi.object({
     location : Joi.string(),
     map_link : Joi.string(),
     coached_by : Joi.string().allow(''),
-    event_datetime : Joi.string(),
+    event_datetime : Joi.date().format('YYYY-MM-DD HH:mm'),
 })
 
 let editEventValidator = async(req, res, next) => {
     try {
         const value = await editEventValidatorSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
+let deleteEventValidatorSchema = Joi.object({
+    user_id : Joi.string().required(),
+    event_id : Joi.string().required()
+})
+
+let deleteEventValidator = async(req, res, next) => {
+    try {
+        const value = await deleteEventValidatorSchema.validate(req.body);
         if (value.hasOwnProperty('error')) {
             throw new Error(value.error);
         } else {
@@ -607,5 +628,6 @@ module.exports = {
     followUserValidate: followUserValidate,
     getLeaderboardValidate: getLeaderboardValidate,
     addEventValidator: addEventValidator,
-    editEventValidator: editEventValidator
+    editEventValidator: editEventValidator,
+    deleteEventValidator : deleteEventValidator
 }
