@@ -1355,6 +1355,21 @@ const getOtherPersonalityTypeList = async(req, res) => {
     }
 }
 
+const getEvents = async(req, res) => {
+    try {
+        const { user_id, date } = req.body;
+
+        const events = await eventModel.find({ event_datetime : { $gte : date + " 00:00", $lte : date + "23:59" } }).sort({ event_datetime : 1 });
+
+        let apiResponse = response.generate(false, `Events for ${date}`, { events });
+        res.status(200).send(apiResponse);
+
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 
 module.exports = {
     test: test,
@@ -1391,6 +1406,7 @@ module.exports = {
     addOrgType: addOrgType,
     addEvent: addEvent,
     editEvent: editEvent,
+    getEvents: getEvents,
     getOtherPersonalityTypeList : getOtherPersonalityTypeList,
     deleteEvent : deleteEvent
 }

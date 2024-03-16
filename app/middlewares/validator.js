@@ -606,6 +606,27 @@ let deleteEventValidator = async(req, res, next) => {
     }
 }
 
+let getEventsValidatorSchema = Joi.object({
+    user_id : Joi.string().required(),
+    date : Joi.date().format('YYYY-MM-DD'),
+})
+
+let getEventsValidator = async(req, res, next) => {
+    try {
+        const value = await getEventsValidatorSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     loginValidate: loginValidate,
@@ -630,5 +651,6 @@ module.exports = {
     getLeaderboardValidate: getLeaderboardValidate,
     addEventValidator: addEventValidator,
     editEventValidator: editEventValidator,
-    deleteEventValidator : deleteEventValidator
+    deleteEventValidator : deleteEventValidator,
+    getEventsValidator : getEventsValidator
 }
