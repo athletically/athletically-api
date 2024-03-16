@@ -608,6 +608,7 @@ const updateProfile = async(req, res) => {
         finduser.awards = (req.body.hasOwnProperty('awards') && (req.body.awards.trim())) ? JSON.parse(req.body.awards) : undefined;
         finduser.medals = (req.body.hasOwnProperty('medals') && (req.body.medals.trim())) ? JSON.parse(req.body.medals) : undefined;
         finduser.previous_clubs = (req.body.hasOwnProperty('previous_clubs') && (req.body.previous_clubs.trim())) ? JSON.parse(req.body.previous_clubs) : undefined;
+        finduser.clubs = (req.body.hasOwnProperty('current_clubs') && (req.body.current_clubs.trim())) ? JSON.parse(req.body.current_clubs) : undefined;
         finduser.age = (req.body.hasOwnProperty('age') && (req.body.age.trim())) ? req.body.age : undefined;
         finduser.certifications = (req.body.hasOwnProperty('certifications') && (req.body.certifications.trim())) ? JSON.parse(req.body.certifications) : undefined;
         finduser.home_ground = (req.body.hasOwnProperty('home_ground') && (req.body.home_ground.trim())) ? req.body.home_ground : undefined;

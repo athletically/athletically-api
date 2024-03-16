@@ -344,6 +344,7 @@ let updateProfileValidateSchema = Joi.object({
     awards : Joi.string().allow(''),
     medals : Joi.string().allow(''),
     previous_clubs : Joi.string().allow(''),
+    current_clubs : Joi.string().allow(''),
     age : Joi.string().allow(''),
     certifications : Joi.string().allow(''),
     home_ground : Joi.string().allow(''),
