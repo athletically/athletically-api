@@ -599,7 +599,7 @@ const updateProfile = async(req, res) => {
         finduser.name = (req.body.hasOwnProperty('name') && (req.body.name.trim())) ? req.body.name : undefined;
         finduser.dob = (req.body.hasOwnProperty('dob') && (req.body.dob.trim())) ? req.body.dob : undefined;
         finduser.height = (req.body.hasOwnProperty('height') && (req.body.height.trim())) ? req.body.height : undefined;
-        finduser.width = (req.body.hasOwnProperty('width') && (req.body.width.trim())) ? req.body.width : undefined;
+        finduser.width = (req.body.hasOwnProperty('weight') && (req.body.weight.trim())) ? req.body.weight : undefined;
         finduser.country = (req.body.hasOwnProperty('country') && (req.body.country.trim())) ? req.body.country : undefined;
         finduser.city = (req.body.hasOwnProperty('city') && (req.body.city.trim())) ? req.body.city : undefined;
         finduser.competition_won = (req.body.hasOwnProperty('competition_won') && (req.body.competition_won.trim())) ? JSON.parse(req.body.competition_won) : undefined;
