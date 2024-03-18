@@ -596,41 +596,47 @@ const updateProfile = async(req, res) => {
         
         req.body = JSON.parse(JSON.stringify(req.body));
 
-        finduser.name = (req.body.hasOwnProperty('name') && (req.body.name.trim())) ? req.body.name : undefined;
-        finduser.dob = (req.body.hasOwnProperty('dob') && (req.body.dob.trim())) ? req.body.dob : undefined;
-        finduser.height = (req.body.hasOwnProperty('height') && (req.body.height.trim())) ? req.body.height : undefined;
-        finduser.width = (req.body.hasOwnProperty('weight') && (req.body.weight.trim())) ? req.body.weight : undefined;
-        finduser.country = (req.body.hasOwnProperty('country') && (req.body.country.trim())) ? req.body.country : undefined;
-        finduser.city = (req.body.hasOwnProperty('city') && (req.body.city.trim())) ? req.body.city : undefined;
-        finduser.competition_won = (req.body.hasOwnProperty('competition_won') && (req.body.competition_won.trim())) ? JSON.parse(req.body.competition_won) : undefined;
-        finduser.previous_teams = (req.body.hasOwnProperty('previous_teams') && (req.body.previous_teams.trim())) ? JSON.parse(req.body.previous_teams) : undefined;
-        finduser.previous_coaches = (req.body.hasOwnProperty('previous_coaches') && (req.body.previous_coaches.trim())) ? JSON.parse(req.body.previous_coaches) : undefined;
-        finduser.awards = (req.body.hasOwnProperty('awards') && (req.body.awards.trim())) ? JSON.parse(req.body.awards) : undefined;
-        finduser.medals = (req.body.hasOwnProperty('medals') && (req.body.medals.trim())) ? JSON.parse(req.body.medals) : undefined;
-        finduser.previous_clubs = (req.body.hasOwnProperty('previous_clubs') && (req.body.previous_clubs.trim())) ? JSON.parse(req.body.previous_clubs) : undefined;
-        finduser.clubs = (req.body.hasOwnProperty('current_clubs') && (req.body.current_clubs.trim())) ? JSON.parse(req.body.current_clubs) : undefined;
-        finduser.age = (req.body.hasOwnProperty('age') && (req.body.age.trim())) ? req.body.age : undefined;
-        finduser.certifications = (req.body.hasOwnProperty('certifications') && (req.body.certifications.trim())) ? JSON.parse(req.body.certifications) : undefined;
-        finduser.home_ground = (req.body.hasOwnProperty('home_ground') && (req.body.home_ground.trim())) ? req.body.home_ground : undefined;
-        finduser.map_link = (req.body.hasOwnProperty('map_link') && (req.body.map_link.trim())) ? req.body.map_link : undefined;
-        finduser.team_size = (req.body.hasOwnProperty('team_size') && (req.body.team_size.trim())) ? req.body.team_size : undefined;
-        finduser.managements = (req.body.hasOwnProperty('managements') && (req.body.managements.trim())) ? JSON.parse(req.body.managements) : undefined;
-        finduser.coaches = (req.body.hasOwnProperty('coaches') && (req.body.coaches.trim())) ? JSON.parse(req.body.coaches) : undefined;
-        finduser.other_stuffs = (req.body.hasOwnProperty('other_stuffs') && (req.body.other_stuffs.trim())) ? JSON.parse(req.body.other_stuffs) : undefined;
-        finduser.players = (req.body.hasOwnProperty('players') && (req.body.players.trim())) ? JSON.parse(req.body.players) : undefined;
-        finduser.titles = (req.body.hasOwnProperty('titles') && (req.body.titles.trim())) ? JSON.parse(req.body.titles) : undefined;
+        for(let key in req.body){
+            if(req.body[key].trim() === ''){
+                delete req.body[key]; 
+            }
+        }
+
+        finduser.name = (req.body.hasOwnProperty('name') && (req.body.name.trim())) ? req.body.name : finduser.name;
+        finduser.dob = (req.body.hasOwnProperty('dob') && (req.body.dob.trim())) ? req.body.dob : finduser.dob;
+        finduser.height = (req.body.hasOwnProperty('height') && (req.body.height.trim())) ? req.body.height : finduser.height;
+        finduser.width = (req.body.hasOwnProperty('weight') && (req.body.weight.trim())) ? req.body.weight : finduser.width;
+        finduser.country = (req.body.hasOwnProperty('country') && (req.body.country.trim())) ? req.body.country : finduser.country;
+        finduser.city = (req.body.hasOwnProperty('city') && (req.body.city.trim())) ? req.body.city : finduser.city;
+        finduser.competition_won = (req.body.hasOwnProperty('competition_won') && (req.body.competition_won.trim())) ? JSON.parse(req.body.competition_won) : finduser.competition_won;
+        finduser.previous_teams = (req.body.hasOwnProperty('previous_teams') && (req.body.previous_teams.trim())) ? JSON.parse(req.body.previous_teams) : finduser.previous_teams;
+        finduser.previous_coaches = (req.body.hasOwnProperty('previous_coaches') && (req.body.previous_coaches.trim())) ? JSON.parse(req.body.previous_coaches) : finduser.previous_coaches;
+        finduser.awards = (req.body.hasOwnProperty('awards') && (req.body.awards.trim())) ? JSON.parse(req.body.awards) : finduser.awards;
+        finduser.medals = (req.body.hasOwnProperty('medals') && (req.body.medals.trim())) ? JSON.parse(req.body.medals) : finduser.medals;
+        finduser.previous_clubs = (req.body.hasOwnProperty('previous_clubs') && (req.body.previous_clubs.trim())) ? JSON.parse(req.body.previous_clubs) : finduser.previous_clubs;
+        finduser.clubs = (req.body.hasOwnProperty('current_clubs') && (req.body.current_clubs.trim())) ? JSON.parse(req.body.current_clubs) : finduser.clubs;
+        finduser.age = (req.body.hasOwnProperty('age') && (req.body.age.trim())) ? req.body.age : finduser.age;
+        finduser.certifications = (req.body.hasOwnProperty('certifications') && (req.body.certifications.trim())) ? JSON.parse(req.body.certifications) : finduser.certifications;
+        finduser.home_ground = (req.body.hasOwnProperty('home_ground') && (req.body.home_ground.trim())) ? req.body.home_ground : finduser.home_ground;
+        finduser.map_link = (req.body.hasOwnProperty('map_link') && (req.body.map_link.trim())) ? req.body.map_link : finduser.map_link;
+        finduser.team_size = (req.body.hasOwnProperty('team_size') && (req.body.team_size.trim())) ? req.body.team_size : finduser.team_size;
+        finduser.managements = (req.body.hasOwnProperty('managements') && (req.body.managements.trim())) ? JSON.parse(req.body.managements) : finduser.managements;
+        finduser.coaches = (req.body.hasOwnProperty('coaches') && (req.body.coaches.trim())) ? JSON.parse(req.body.coaches) : finduser.coaches;
+        finduser.other_stuffs = (req.body.hasOwnProperty('other_stuffs') && (req.body.other_stuffs.trim())) ? JSON.parse(req.body.other_stuffs) : finduser.other_stuffs;
+        finduser.players = (req.body.hasOwnProperty('players') && (req.body.players.trim())) ? JSON.parse(req.body.players) : finduser.players;
+        finduser.titles = (req.body.hasOwnProperty('titles') && (req.body.titles.trim())) ? JSON.parse(req.body.titles) : finduser.titles;
         // finduser.managements = (req.body.hasOwnProperty('managements')) ? req.body.managements : undefined;
-        finduser.alumni_players = (req.body.hasOwnProperty('alumni_players') && (req.body.alumni_players.trim())) ? JSON.parse(req.body.alumni_players) : undefined;
-        finduser.active_competitions = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : undefined;
-        finduser.org_type = (req.body.hasOwnProperty('org_type') && (req.body.org_type.trim())) ? req.body.org_type : undefined;
-        finduser.org_desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : undefined;  
-        finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : undefined;
-        finduser.game = (req.body.hasOwnProperty('game_id') && (req.body.game_id.trim())) ? req.body.game_id : undefined;  
-        finduser.position = (req.body.hasOwnProperty('position_id') && (req.body.position_id.trim())) ? req.body.position_id : undefined;
-        finduser.image = (objectUrl !== '') ? objectUrl : DEFAULT_USER_IMAGE;
-        finduser.estd = (req.body.hasOwnProperty('estd') && (req.body.estd.trim())) ? req.body.estd : undefined;
-        finduser.key_personalities = (req.body.hasOwnProperty('key_personalities') && (req.body.key_personalities.trim())) ? JSON.parse(req.body.key_personalities) : undefined;
-        finduser.type = (req.body.hasOwnProperty('type') && (req.body.type.trim())) ? req.body.type : undefined;
+        finduser.alumni_players = (req.body.hasOwnProperty('alumni_players') && (req.body.alumni_players.trim())) ? JSON.parse(req.body.alumni_players) : finduser.alumni_players;
+        finduser.active_competitions = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : finduser.active_competitions;
+        finduser.org_type = (req.body.hasOwnProperty('org_type') && (req.body.org_type.trim())) ? req.body.org_type : finduser.org_type;
+        finduser.org_desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.org_desc;  
+        finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : finduser.user_type;
+        finduser.game = (req.body.hasOwnProperty('game_id') && (req.body.game_id.trim())) ? req.body.game_id : finduser.game;  
+        finduser.position = (req.body.hasOwnProperty('position_id') && (req.body.position_id.trim())) ? req.body.position_id : finduser.position;
+        finduser.image = (objectUrl !== '') ? objectUrl : (finduser.image) ? finduser.image : DEFAULT_USER_IMAGE;
+        finduser.estd = (req.body.hasOwnProperty('estd') && (req.body.estd.trim())) ? req.body.estd : finduser.estd;
+        finduser.key_personalities = (req.body.hasOwnProperty('key_personalities') && (req.body.key_personalities.trim())) ? JSON.parse(req.body.key_personalities) : finduser.key_personalities;
+        finduser.type = (req.body.hasOwnProperty('type') && (req.body.type.trim())) ? req.body.type : finduser.type;
 
         const updated = await finduser.save();
 

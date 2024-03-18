@@ -328,7 +328,7 @@ let getPostionValidate = async(req, res, next) => {
 }
 
 let updateProfileValidateSchema = Joi.object({
-    name : Joi.string().allow(''),
+    name : Joi.string().required(),
     dob : Joi.string().allow(''),
     height : Joi.string().allow(''),
     weight : Joi.string().allow(''),
