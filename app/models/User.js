@@ -92,7 +92,7 @@ let userSchema = new Schema({
     type: String,
     default : ""
   },
-  certification : {
+  certifications : {
     type: Array,
     default : []
   },
