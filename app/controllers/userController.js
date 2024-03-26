@@ -627,7 +627,7 @@ const updateProfile = async(req, res) => {
         finduser.titles = (req.body.hasOwnProperty('titles') && (req.body.titles.trim())) ? JSON.parse(req.body.titles) : finduser.titles;
         // finduser.managements = (req.body.hasOwnProperty('managements')) ? req.body.managements : undefined;
         finduser.alumni_players = (req.body.hasOwnProperty('alumni_players') && (req.body.alumni_players.trim())) ? JSON.parse(req.body.alumni_players) : finduser.alumni_players;
-        finduser.active_competitions = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : finduser.active_competitions;
+        finduser.active_competition = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : finduser.active_competitions;
         finduser.org_type = (req.body.hasOwnProperty('org_type') && (req.body.org_type.trim())) ? req.body.org_type : finduser.org_type;
         finduser.desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.org_desc;  
         finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : finduser.user_type;
