@@ -629,13 +629,13 @@ const updateProfile = async(req, res) => {
         finduser.alumni_players = (req.body.hasOwnProperty('alumni_players') && (req.body.alumni_players.trim())) ? JSON.parse(req.body.alumni_players) : finduser.alumni_players;
         finduser.active_competitions = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : finduser.active_competitions;
         finduser.org_type = (req.body.hasOwnProperty('org_type') && (req.body.org_type.trim())) ? req.body.org_type : finduser.org_type;
-        finduser.desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.org_desc;  
+        finduser.desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.desc;  
         finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : finduser.user_type;
         finduser.game = (req.body.hasOwnProperty('game_id') && (req.body.game_id.trim())) ? req.body.game_id : finduser.game;  
         finduser.position = (req.body.hasOwnProperty('position_id') && (req.body.position_id.trim())) ? req.body.position_id : finduser.position;
         finduser.image = (objectUrl !== '') ? objectUrl : (finduser.image) ? finduser.image : DEFAULT_USER_IMAGE;
         finduser.estd = (req.body.hasOwnProperty('estd') && (req.body.estd.trim())) ? req.body.estd : finduser.estd;
-        finduser.key_personalities = (req.body.hasOwnProperty('key_parsonalities') && (req.body.key_parsonalities.trim())) ? JSON.parse(req.body.key_parsonalities) : finduser.key_parsonalities;
+        finduser.key_personalities = (req.body.hasOwnProperty('key_parsonalities') && (req.body.key_parsonalities.trim())) ? JSON.parse(req.body.key_parsonalities) : finduser.key_personalities;
         finduser.type = (req.body.hasOwnProperty('type') && (req.body.type.trim())) ? req.body.type : finduser.type;
 
         const updated = await finduser.save();
