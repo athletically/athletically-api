@@ -537,7 +537,8 @@ let addEventValidatorSchema = Joi.object({
     location : Joi.string().required(),
     map_link : Joi.string().required(),
     coached_by : Joi.string().allow(''),
-    event_datetime : Joi.date().format('YYYY-MM-DD HH:mm').required(),
+    event_date : Joi.date().format('YYYY-MM-DD').required(),
+    event_time : Joi.date().format('HH:mm').required(),
 })
 
 let addEventValidator = async(req, res, next) => {
@@ -566,7 +567,8 @@ let editEventValidatorSchema = Joi.object({
     location : Joi.string(),
     map_link : Joi.string(),
     coached_by : Joi.string().allow(''),
-    event_datetime : Joi.date().format('YYYY-MM-DD HH:mm'),
+    event_date : Joi.date().format('YYYY-MM-DD'),
+    event_time : Joi.date().format('HH:mm'),
 })
 
 let editEventValidator = async(req, res, next) => {

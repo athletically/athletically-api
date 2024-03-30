@@ -1268,7 +1268,8 @@ const addEvent = async(req, res) => {
             scouted_by : req.body.scouted_by,
             location : req.body.location,
             map_link : req.body.map_link,
-            event_datetime : req.body.event_datetime
+            event_date : req.body.event_date,
+            event_time : req.body.event_time,
         })
 
         await newEvent.save();
@@ -1306,7 +1307,8 @@ const editEvent = async(req, res) => {
         event.scouted_by = (req.body.scouted_by) ? req.body.scouted_by : event.scouted_by,
         event.location = (req.body.location) ? req.body.location : event.location,
         event.map_link = (req.body.map_link) ? req.body.map_link : event.map_link,
-        event.event_datetime = (req.body.event_datetime) ? req.body.event_datetime : event.event_datetime,
+        event.event_date = (req.body.event_date) ? req.body.event_date : event.event_date,
+        event.event_time = (req.body.event_time) ? req.body.event_time : event.event_time,
 
         await event.save();
 
@@ -1365,7 +1367,7 @@ const getEvents = async(req, res) => {
     try {
         const { user_id, date } = req.body;
 
-        const events = await eventModel.find({ event_datetime : { $gte : date + " 00:00", $lte : date + "23:59" } }).sort({ event_datetime : 1 });
+        const events = await eventModel.find({ event_date : date }).sort({ event_time : 1 });
 
         let apiResponse = response.generate(false, `Events for ${date}`, { events });
         res.status(200).send(apiResponse);

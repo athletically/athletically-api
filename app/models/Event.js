@@ -41,7 +41,11 @@ let eventSchema = new Schema({
     type: String,
     required: true
   },
-  event_datetime: {
+  event_date: {
+    type: String,
+    required: true
+  },
+  event_time: {
     type: String,
     required: true
   },
