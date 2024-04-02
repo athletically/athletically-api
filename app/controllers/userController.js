@@ -1367,7 +1367,7 @@ const getEvents = async(req, res) => {
     try {
         const { user_id, date } = req.body;
 
-        const events = await eventModel.find({ event_date : date }).sort({ event_time : 1 });
+        const events = await eventModel.find({ event_date : date, status : 'active' }).sort({ event_time : 1 });
 
         let apiResponse = response.generate(false, `Events for ${date}`, { events });
         res.status(200).send(apiResponse);
