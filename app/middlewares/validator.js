@@ -560,15 +560,15 @@ let addEventValidator = async(req, res, next) => {
 let editEventValidatorSchema = Joi.object({
     user_id : Joi.string().required(),
     event_id : Joi.string().required(),
-    event_title : Joi.string(),
-    event_desc : Joi.string(),
-    event_for : Joi.string(),
+    event_title : Joi.string().allow(''),
+    event_desc : Joi.string().allow(''),
+    event_for : Joi.string().allow(''),
     scouted_by : Joi.string().allow(''),
-    location : Joi.string(),
-    map_link : Joi.string(),
+    location : Joi.string().allow(''),
+    map_link : Joi.string().allow(''),
     coached_by : Joi.string().allow(''),
-    event_date : Joi.date().format('YYYY-MM-DD'),
-    event_time : Joi.date().format('HH:mm'),
+    event_date : Joi.date().format('YYYY-MM-DD').allow(''),
+    event_time : Joi.date().format('HH:mm').allow(''),
 })
 
 let editEventValidator = async(req, res, next) => {
