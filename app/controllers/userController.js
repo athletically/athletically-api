@@ -1387,6 +1387,26 @@ const getEvents = async(req, res) => {
     }
 }
 
+const getVideos = async(req, res) => {
+    try {
+      const reel_id = req.query.reel_id;
+      const reel = await postModel.findById(reel_id).lean();
+      if(!reel){
+        let apiResponse = response.generate(false, `Invalid Reel Id`, []);
+        res.status(200).send(apiResponse);
+        return;
+      }
+      const type = reel.type;
+      const reels = await postModel.find({ type : type, status : 'active' });
+
+      let apiResponse = response.generate(false, `${type} videos found`, reels );
+      res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
 
 module.exports = {
     test: test,
@@ -1425,5 +1445,6 @@ module.exports = {
     editEvent: editEvent,
     getEvents: getEvents,
     getOtherPersonalityTypeList : getOtherPersonalityTypeList,
-    deleteEvent : deleteEvent
+    deleteEvent : deleteEvent,
+    getVideos : getVideos
 }

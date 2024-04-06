@@ -630,6 +630,26 @@ let getEventsValidator = async(req, res, next) => {
     }
 }
 
+let getVideosValidateSchema = Joi.object({
+    reel_id : Joi.string().required()
+})
+
+let getVideosValidate = async(req, res, next) => {
+    try {
+        const value = await getVideosValidateSchema.validate(req.query);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     loginValidate: loginValidate,
@@ -655,5 +675,6 @@ module.exports = {
     addEventValidator: addEventValidator,
     editEventValidator: editEventValidator,
     deleteEventValidator : deleteEventValidator,
-    getEventsValidator : getEventsValidator
+    getEventsValidator : getEventsValidator,
+    getVideosValidate : getVideosValidate
 }
