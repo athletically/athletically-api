@@ -11,23 +11,22 @@ const customLoginValidateSchema = Joi.object({
             'any.required': `Please enter your username`
           }),
     password: Joi.string()
-        .max(20)
-        .required()
-        .messages({
-            'string.empty': `Password cannot be empty`,
-            'any.required': `Please enter your password`
-          })
+        .max(20).allow(''),
+        // .required()
+        // .messages({
+        //     'string.empty': `Password cannot be empty`,
+        //     'any.required': `Please enter your password`
+        //   })
         // source_type: Joi.number().required()
 });
 
 const customRegisterValidateSchema = Joi.object({
     password: Joi.string()
-        .max(20)
-        .required()
-        .messages({
-            'string.empty': `Password cannot be empty`,
-            'any.required': `Please enter your password`
-          }),
+        .max(20).allow(''),
+        // .messages({
+        //     'string.empty': `Password cannot be empty`,
+        //     'any.required': `Please enter your password`
+        //   }),
     email: Joi.string().email()
         .required()
         .messages({
@@ -39,6 +38,8 @@ const customRegisterValidateSchema = Joi.object({
         'string.empty': `Name cannot be empty`,
         'any.required': `Please enter your Name`
       }),
+    idToken: Joi.string().allow(''),
+    photo: Joi.string().allow('')
 });
 
 const sendMailForgotPasswordValidateSchema = Joi.object({

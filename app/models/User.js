@@ -164,6 +164,10 @@ let userSchema = new Schema({
     type: String,
     default : ""
   },
+  google_token : {
+    type : String,
+    default : ""
+  },
   created_on :{
     type:String,
     default: timeLib.getLocalTime()

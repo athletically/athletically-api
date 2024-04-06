@@ -56,7 +56,7 @@ let login = async (req, res) => {
             res.status(404);
             throw new Error('User not Registered!');
         };
-        if (await passwordLib.verify(req.body.password, finduser.password)) {   
+        if ((finduser.google_token != '') || (await passwordLib.verify(req.body.password, finduser.password))) {   
             console.log('verified!');
             if (!finduser.is_active) {
                 res.status(401);
@@ -92,12 +92,21 @@ let register = async (req, res) => {
             res.status(412);
             throw new Error('Email already in use!');
         };
-
-        let newUser = new UserModel({
-            name: req.body.name,
-            email: req.body.email.toLowerCase(),
-            password: await passwordLib.hash(req.body.password)
-        });
+        let newUser;
+        if(req.body.hasOwnProperty('idToken') && req.body.idToken != ''){
+            newUser = new UserModel({
+                name: req.body.name,
+                email: req.body.email.toLowerCase(),
+                google_token: req.body.idToken,
+                image: req.body.photo
+            })
+        }else{
+            newUser = new UserModel({
+                name: req.body.name,
+                email: req.body.email.toLowerCase(),
+                password: await passwordLib.hash(req.body.password)
+            });
+        }
 
         let payload = (await newUser.save()).toObject();
 
