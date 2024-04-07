@@ -631,7 +631,8 @@ let getEventsValidator = async(req, res, next) => {
 }
 
 let getVideosValidateSchema = Joi.object({
-    reel_id : Joi.string().required()
+    user_id : Joi.string().required(),
+    type : Joi.string().valid('reel', 'match', 'podcast').required()
 })
 
 let getVideosValidate = async(req, res, next) => {
