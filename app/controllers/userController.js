@@ -647,7 +647,11 @@ const updateProfile = async(req, res) => {
         finduser.key_personalities = (req.body.hasOwnProperty('key_parsonalities') && (req.body.key_parsonalities.trim())) ? JSON.parse(req.body.key_parsonalities) : finduser.key_personalities;
         finduser.type = (req.body.hasOwnProperty('type') && (req.body.type.trim())) ? req.body.type : finduser.type;
 
-        const updated = await finduser.save();
+        let updated = {};
+        await finduser.save().then(data => {
+            updated = data.toObject();
+            updated.updated = true;
+        });
 
         const game_id = req.body.game_id;
         const position_id = req.body.position_id;
@@ -953,11 +957,13 @@ const getExplore = async(req, res) => {
                         name : 1,
                         email : 1,
                         image : 1,
+                        game_id : 1
                     }
                 }
             ])
 
             await Promise.all(users.map(async user => {
+                // user = user.toObject();
                 delete user.__v;
                 delete user.password;
                 delete user.is_active;
