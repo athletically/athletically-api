@@ -1029,6 +1029,9 @@ const getExplore = async(req, res) => {
             })
         }
 
+        if(returndata.users.userDetails.length < 1 && returndata.users.reels.length  < 1)
+            returndata.user = [];
+
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
         res.status(200).send(apiResponse);
 
@@ -1207,7 +1210,8 @@ const getLeaderboard = async(req, res) => {
                     name : 1,
                     email : 1,
                     image : 1,
-                    score : 1
+                    score : 1,
+                    dob : 1
                 }
             }
         ])
