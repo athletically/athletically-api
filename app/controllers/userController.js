@@ -1029,7 +1029,7 @@ const getExplore = async(req, res) => {
             })
         }
 
-        if(returndata.users.userDetails.length < 1 && returndata.users.reels.length  < 1)
+        if(returndata.users[0].userDetails.length < 1 && returndata.users[0].reels.length  < 1)
             returndata.user = [];
 
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
