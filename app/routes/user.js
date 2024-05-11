@@ -63,4 +63,5 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-types-list`,  auth.isAuthorized,  userController.getOtherPersonalityTypeList);
     app.get(`${baseUrl}/get-org-types`,  auth.isAuthorized,  userController.getOrgTypes);
     app.get(`${baseUrl}/get-videos`, auth.isAuthorized, validator.getVideosValidate, userController.getVideos);
+    app.get(`${baseUrl}/get-user-groups-connect`, auth.isAuthorized, userController.getGroupsOfUser);
 };

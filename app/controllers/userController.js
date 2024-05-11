@@ -1418,6 +1418,79 @@ const getVideos = async(req, res) => {
     }
 }
 
+const getGroupsOfUser = async(req, res) => {
+    try {
+        let user_id = req.user._id;
+        let groups = await userGroupMappingTable.aggregate([
+            {
+              $match: {
+                user_id : new mongoose.Types.ObjectId(user_id)
+              }
+            },
+            {
+                $lookup: {
+                  from: "groups",
+                  localField: "group_id",
+                  foreignField: "_id",
+                  as: "groupdtls"
+                }
+            },
+            {
+                $unwind: "$groupdtls"
+            },
+            {
+                $lookup: {
+                  from: "positions",
+                  localField: "groupdtls.position_id",
+                  foreignField: "_id",
+                  as: "positiondtls"
+                }
+            },
+            {
+                $unwind: "$positiondtls"
+            },
+            {
+                $lookup: {
+                  from: "games",
+                  localField: "groupdtls.game_id",
+                  foreignField: "_id",
+                  as: "gamedtls"
+                }
+            },
+            {
+                $unwind: "$gamedtls"
+            }
+        ])
+
+        if(groups.lenth < 1){
+            let apiResponse = response.generate(false, `User does not belong to any group.`, [] );
+            res.status(200).send(apiResponse);
+            return;
+        }
+
+        let response_data = [];
+
+        groups.forEach(async (group) => {
+            let temp = {
+                group_id : group.groupdtls.id,
+                group_name : group.groupdtls.name,
+                group_for_game : group.gamedtls.name,
+                group_for_position : group.positiondtls.name
+            }
+            
+            response_data.push(temp);
+        })
+
+        let apiResponse = response.generate(false, `User group retrived.`, response_data );
+        res.status(200).send(apiResponse);
+        return;
+        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
 
 module.exports = {
     test: test,
@@ -1457,5 +1530,6 @@ module.exports = {
     getEvents: getEvents,
     getOtherPersonalityTypeList : getOtherPersonalityTypeList,
     deleteEvent : deleteEvent,
-    getVideos : getVideos
+    getVideos : getVideos,
+    getGroupsOfUser : getGroupsOfUser
 }

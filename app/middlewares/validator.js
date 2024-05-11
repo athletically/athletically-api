@@ -651,6 +651,26 @@ let getVideosValidate = async(req, res, next) => {
     }
 }
 
+let getUserGroupsValidateSchema = Joi.object({
+    user_id : Joi.string().required()
+})
+
+let getUserGroupsValidate = async(req, res, next) => {
+    try {
+        const value = await getUserGroupsValidateSchema.validate(req.body);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     loginValidate: loginValidate,
@@ -677,5 +697,6 @@ module.exports = {
     editEventValidator: editEventValidator,
     deleteEventValidator : deleteEventValidator,
     getEventsValidator : getEventsValidator,
-    getVideosValidate : getVideosValidate
+    getVideosValidate : getVideosValidate,
+    getUserGroupsValidate : getUserGroupsValidate
 }
