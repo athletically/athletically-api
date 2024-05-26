@@ -1491,6 +1491,30 @@ const getGroupsOfUser = async(req, res) => {
     }
 }
 
+const validateToken = async(req, res) => {
+    try {
+        const token = require('../libs/tokenLib');
+        if (req.query.token && !check.isEmpty(req.query.token)) {
+            let token_str = req.query.token;
+            token_str = token_str.replace("Bearer ", "");
+            let decoded = await token.verifyClaimWithoutSecret(token_str);
+            let user = decoded.user;
+            if(user){
+                let apiResponse = response.generate(false, `Token is valid`, {} );
+                res.status(200).send(apiResponse);
+            }
+        } else {
+            let apiResponse = response.generate(true, 'Token is not valid', {});
+            res.status(403)
+            res.send(apiResponse)
+        }
+    } catch (error) {
+        let apiResponse = response.generate(true, 'Token is not valid', {});
+        res.status(403)
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     test: test,
@@ -1531,5 +1555,6 @@ module.exports = {
     getOtherPersonalityTypeList : getOtherPersonalityTypeList,
     deleteEvent : deleteEvent,
     getVideos : getVideos,
-    getGroupsOfUser : getGroupsOfUser
+    getGroupsOfUser : getGroupsOfUser,
+    validateToken : validateToken
 }
