@@ -1,4 +1,5 @@
 const http = require('http');
+const socket = require('../socket/ws');
 
 const startServer = (app) => {
     const server = http.createServer(app);
@@ -10,6 +11,7 @@ const startServer = (app) => {
 
     server.on('listening', () => {
         console.log(`Server listening on port: ${server.address().port}`);
+        socket.startSocket(server);
     });
 
     server.on('error', (err) => {
