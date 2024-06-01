@@ -40,7 +40,7 @@ let firebaseAuth = async (req,res,next) => {
 
 let isAuthorizedSocket = async (socket,next) => {
   try {
-    let socketToken;
+    //   let socketToken;
    //console.log("JWT token,", socket.handshake);
     if (socket.handshake.headers.auth_token || socket.handshake.query.auth_token) {
         socketToken = socket.handshake.headers.auth_token || socket.handshake.query.auth_token;

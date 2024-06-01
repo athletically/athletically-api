@@ -17,17 +17,34 @@ let chatSchema = new Schema({
     type: mongoose.Types.ObjectId,
     required: true
   },
-  user_id: {
+  sender_id: {
     type: mongoose.Types.ObjectId,
     required: true
   },
-  message:{
+  receiver_id: {
+    type: String,
+    default: ""
+  },
+  message_content:{
+    type: String,
+    default : ''
+  },
+  message_file_path:{
     type: String,
     default : ''
   },
   reply_to: {
     type: String,
     default: ""
+  },
+  read_status: {
+    type: String,
+    default: 1,
+    enum : [1, 2, 3] // 1 = on the way | 2 = sent | 3 = read 
+  },
+  datetime : {
+    type: String,
+    default: new Date().getTime()
   },
   status:{
     type: String,

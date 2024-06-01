@@ -1420,7 +1420,8 @@ const getVideos = async(req, res) => {
 
 const getGroupsOfUser = async(req, res) => {
     try {
-        let user_id = req.user._id;
+        let user_id = req.query.user_id;
+        console.log(`user_id :`, user_id);
         let groups = await userGroupMappingTable.aggregate([
             {
               $match: {
@@ -1470,16 +1471,18 @@ const getGroupsOfUser = async(req, res) => {
 
         let response_data = [];
 
-        groups.forEach(async (group) => {
+        await Promise.all(groups.map(async (group) => {
+            let count = await getGroupUserCount(group.groupdtls.id);
             let temp = {
                 group_id : group.groupdtls.id,
                 group_name : group.groupdtls.name,
                 group_for_game : group.gamedtls.name,
-                group_for_position : group.positiondtls.name
+                group_for_position : group.positiondtls.name,
+                usercount : count
             }
             
             response_data.push(temp);
-        })
+        }))
 
         let apiResponse = response.generate(false, `User group retrived.`, response_data );
         res.status(200).send(apiResponse);
@@ -1489,6 +1492,18 @@ const getGroupsOfUser = async(req, res) => {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
     }
+}
+
+const getGroupUserCount = async(group_id) => {
+    let count = await userGroupMappingTable.countDocuments([
+        {
+          $match: { 
+            group_id : new mongoose.Types.ObjectId(group_id),
+            status  : 'active'
+          }
+        }
+    ]);
+    return count;
 }
 
 const validateToken = async(req, res) => {
@@ -1512,6 +1527,59 @@ const validateToken = async(req, res) => {
         let apiResponse = response.generate(true, 'Token is not valid', {});
         res.status(403)
         res.send(apiResponse)
+    }
+}
+
+const getPreviousChatByGroupId = async(req, res) => {
+    try {
+        let group_id = req.query.group_id;
+        let user_id = req.user._id;
+        let chats = await chatModel.aggregate([
+            {
+              $match: {
+                group_id : new mongoose.Types.ObjectId(group_id),
+                status : 'active'
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "_id",
+                foreignField: "sender_id",
+                as: "userdlts"
+              }
+            },
+            {
+              $unwind: "$userdtls"
+            },
+            {
+              $sort: {
+                created_at: 1
+              }
+            }
+        ]);
+        if(chats.length > 0){
+
+            chats.map((chat) => {
+                if(chat.sender_id.toString() === user_id.toString())
+                    chat.isCurrentUser = true;
+                else
+                    chat.isCurrentUser = false;
+
+                return chat;
+            })
+
+            let apiResponse = response.generate(false, 'Chats found', chats);
+            res.status(200).send(apiResponse);
+        }
+        else{
+            let apiResponse = response.generate(false, 'No Chats found', []);
+            res.status(200).send(apiResponse);
+        }
+        return;
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
     }
 }
 
@@ -1556,5 +1624,6 @@ module.exports = {
     deleteEvent : deleteEvent,
     getVideos : getVideos,
     getGroupsOfUser : getGroupsOfUser,
-    validateToken : validateToken
+    validateToken : validateToken,
+    getPreviousChatByGroupId : getPreviousChatByGroupId
 }
