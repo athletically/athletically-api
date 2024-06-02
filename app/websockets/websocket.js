@@ -34,6 +34,7 @@ let setNSP = (gameIo) => {
 
         socket.on('sendMessage', async (messageData) => {
             try {
+                console.log(messageData);
               const { group_id, sender_id, message_content, message_file_path, reply_to } = messageData;
               const newMessage = {
                 group_id: mongoose.Types.ObjectId(group_id),
