@@ -1472,9 +1472,9 @@ const getGroupsOfUser = async(req, res) => {
         let response_data = [];
 
         await Promise.all(groups.map(async (group) => {
-            let count = await getGroupUserCount(group.groupdtls.id);
+            let count = await getGroupUserCount(group.groupdtls._id);
             let temp = {
-                group_id : group.groupdtls.id,
+                group_id : group.groupdtls._id,
                 group_name : group.groupdtls.name,
                 group_for_game : group.gamedtls.name,
                 group_for_position : group.positiondtls.name,

@@ -691,6 +691,26 @@ let validateTokenValidate = async(req, res, next) => {
     }
 }
 
+let getPreviousChatByGroupIdValidateSchema = Joi.object({
+    group_id : Joi.string().required()
+})
+
+let getPreviousChatByGroupIdValidate = async(req, res, next) => {
+    try {
+        const value = await getPreviousChatByGroupIdValidateSchema.validate(req.query);
+        if (value.hasOwnProperty('error')) {
+            throw new Error(value.error);
+        } else {
+            next();
+        }
+    } catch (err) {
+        err.message = err.message.replace('ValidationError: ', "");
+        let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
+        res.status(400);
+        res.send(apiResponse)
+    }
+}
+
 
 module.exports = {
     loginValidate: loginValidate,
@@ -719,5 +739,6 @@ module.exports = {
     getEventsValidator : getEventsValidator,
     getVideosValidate : getVideosValidate,
     getUserGroupsValidate : getUserGroupsValidate,
-    validateTokenValidate : validateTokenValidate
+    validateTokenValidate : validateTokenValidate,
+    getPreviousChatByGroupIdValidate : getPreviousChatByGroupIdValidate
 }
