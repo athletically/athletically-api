@@ -1497,9 +1497,25 @@ const getGroupsOfUser = async(req, res) => {
 const getGroupUserCount = async(group_id) => {
     let count = await userGroupMappingTable.countDocuments([
         {
-          $match: { 
-            group_id : new mongoose.Types.ObjectId(group_id),
-            status  : 'active'
+          $match: {
+            group_id : mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
+            status : 'active'
+          }
+        },
+        {
+          $lookup: {
+            from: "users",
+            localField: "user_id",
+            foreignField: "_id",
+            as: "userdtls"
+          }
+        },
+        {
+          $unwind: "$userdtls"
+        },
+        {
+          $project: {
+            userdtls : 1
           }
         }
     ]);
@@ -1558,7 +1574,7 @@ const getPreviousChatByGroupId = async(req, res) => {
               }
             }
         ]);
-        console.log(chats);
+        // console.log(chats);
         if(chats.length > 0){
 
             chats.map((chat) => {
@@ -1578,6 +1594,45 @@ const getPreviousChatByGroupId = async(req, res) => {
             res.status(200).send(apiResponse);
         }
         return;
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getUsersOfByGroupId = async(req, res) => {
+    try {
+        let users = await userGroupMappingTable.aggregate([
+            {
+              $match: {
+                group_id : mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
+                status : 'active'
+              }
+            },
+            {
+              $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "userdtls"
+              }
+            },
+            {
+              $unwind: "$userdtls"
+            },
+            {
+              $project: {
+                userdtls : 1
+              }
+            }
+        ])
+        users.map((user) => {
+            return user.userdtls;
+        })
+
+        let apiResponse = response.generate(false, "Users found", users);
+        res.status(200).send(apiResponse);
+        
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
@@ -1626,5 +1681,6 @@ module.exports = {
     getVideos : getVideos,
     getGroupsOfUser : getGroupsOfUser,
     validateToken : validateToken,
-    getPreviousChatByGroupId : getPreviousChatByGroupId
+    getPreviousChatByGroupId : getPreviousChatByGroupId,
+    getUsersOfByGroupId : getUsersOfByGroupId
 }

@@ -19,6 +19,7 @@ const AWS = require('aws-sdk');
 const path = require('path');
 const { tryCatch } = require('bull/lib/utils');
 const { object } = require('joi');
+const { group } = require('console');
 const postModel = mongoose.model('Post');
 const likeModel = mongoose.model('Like');
 const commentModel = mongoose.model('Comment');
@@ -42,7 +43,23 @@ const addChat = async(chatdata) => {
     await newChat.save();
 }
 
+const getUserGroups = async(userId) => {
+    try {
+        let groups = await userGroupMappingTable.find({ user_id : userId, status : 'active' });
+        let returndata = [];
+        if(groups.length < 1) return returndata;
+        groups.map((group) => {
+            returndata.push(group.group_id);
+        })
+        return returndata;
+    } catch (error) {
+        console.log("unable to get user Groups for user ", userId);
+        return [];
+    }
+}
+
 module.exports = {
     getUserById : getUserById,
     addChat : addChat,
+    getUserGroups : getUserGroups
 }

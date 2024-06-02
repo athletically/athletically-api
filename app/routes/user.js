@@ -66,4 +66,5 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/get-user-groups-connect`, auth.isAuthorized, userController.getGroupsOfUser);
     app.get(`${baseUrl}/validate-token`, validator.validateTokenValidate, userController.validateToken);
     app.get(`${baseUrl}/get-previous-chats`, auth.isAuthorized, validator.getPreviousChatByGroupIdValidate, userController.getPreviousChatByGroupId);
+    app.get(`${baseUrl}/get-users-of-group`, auth.isAuthorized, validator.getPreviousChatByGroupIdValidate, userController.getUsersOfByGroupId);
 };
