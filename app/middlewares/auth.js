@@ -52,7 +52,7 @@ let isAuthorizedSocket = async (socket,next) => {
         console.log("Invalid token");
     }
     socket.user = decoded.data
-
+    console.log(socket.user);
     next();
 } catch (err) {
     console.log('ERROR => ' + err);
