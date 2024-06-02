@@ -1544,9 +1544,9 @@ const getPreviousChatByGroupId = async(req, res) => {
             {
               $lookup: {
                 from: "users",
-                localField: "_id",
-                foreignField: "sender_id",
-                as: "userdlts"
+                localField: "sender_id",
+                foreignField: "_id",
+                as: "userdtls"
               }
             },
             {
@@ -1558,6 +1558,7 @@ const getPreviousChatByGroupId = async(req, res) => {
               }
             }
         ]);
+        console.log(chats);
         if(chats.length > 0){
 
             chats.map((chat) => {
