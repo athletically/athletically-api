@@ -44,14 +44,15 @@ let isAuthorizedSocket = async (socket,next) => {
     if (socket.handshake.query.auth_token) {
         socketToken = socket.handshake.query.auth_token;
     }
-    console.log(socketToken);
+    // console.log(socketToken);
     const decoded = await token.verifyClaimWithoutSecret(socketToken);
-    console.log(decoded);
+    // console.log(decoded);
     if (!decoded) {
         console.log("Invalid token");
     }
-    socket.user = decoded.data
-    console.log(socket.user);
+    socket.user = decoded.user;
+    socket.user.user_id = decoded.user._id;
+    // console.log(socket.user);
     next();
 } catch (err) {
     console.log('ERROR => ' + err);
