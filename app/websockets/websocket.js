@@ -51,7 +51,7 @@ let setNSP = (gameIo) => {
               const savedMessage = await commonController.addChat(newMessage);
       
               // Emit the message to all users in the group
-              nsp.to(group_id).emit('receiveMessage', savedMessage);
+              socket.to(group_id).emit('receiveMessage', savedMessage);
             } catch (error) {
               console.error('Error saving message:', error);
             }
