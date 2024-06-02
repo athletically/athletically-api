@@ -44,9 +44,9 @@ let isAuthorizedSocket = async (socket,next) => {
     if (socket.handshake.query.auth_token) {
         socketToken = socket.handshake.query.auth_token;
     }
-
+    console.log(socketToken);
     const decoded = await token.verifyClaimWithoutSecret(socketToken);
-
+    console.log(decoded);
     if (!decoded) {
         console.log("Invalid token");
     }
