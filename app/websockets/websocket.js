@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 let setNSP = (gameIo) => {
     let auth = require('../middlewares/auth');
     let commonController = require('../controllers/commonController');
