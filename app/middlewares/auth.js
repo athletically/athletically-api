@@ -40,7 +40,7 @@ let firebaseAuth = async (req,res,next) => {
 
 let isAuthorizedSocket = async (socket,next) => {
   try {
-   //   let socketToken;
+    let socketToken;
     if (socket.handshake.query.auth_token) {
         socketToken = socket.handshake.query.auth_token;
     }
