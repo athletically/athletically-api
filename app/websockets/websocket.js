@@ -47,7 +47,7 @@ let setNSP = (gameIo) => {
                 group_id: mongoose.Types.ObjectId(group_id),
                 sender_id: mongoose.Types.ObjectId(sender_id),
                 message_content,
-                // message_file_path,
+                message_file_path,
                 reply_to,
                 read_status: 1, // Message is on the way
                 datetime: new Date().getTime(),

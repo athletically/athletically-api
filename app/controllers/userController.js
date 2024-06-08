@@ -31,6 +31,7 @@ const followModel = mongoose.model('Follow');
 const eventModel = mongoose.model('Event');
 const orgTypeModel = mongoose.model('Org_type');
 const personalityTypeModel = mongoose.model('Personality_types');
+const commonController = require('./commonController');
 const DEFAULT_USER_IMAGE = "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg";
 
 AWS.config.update({
@@ -1640,6 +1641,44 @@ const getUsersOfByGroupId = async(req, res) => {
 }
 
 
+const uploadChatFiles = async (req, res) => {
+    try {
+        const bucketName = process.env.S3_BUCKET;
+        const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
+        const filePath = req.file.path;
+
+        // Create a readable stream from the file
+        const fileStream = fs.createReadStream(filePath);
+
+        const params = {
+            Bucket: bucketName,
+            Key: `files/${fileName}`,
+            Body: fileStream,
+            ContentType: commonController.getContentType(fileName)
+        };
+
+        const uploadParams = { ...params, Body: fileStream };
+        const uploadResult = await s3.upload(uploadParams).promise();
+
+        const objectUrl = uploadResult.Location;
+
+        let apiResponse = response.generate(false, 'File uploaded successfully', { url : objectUrl });
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        console.error('Error uploading file:', error);
+        let apiResponse = response.generate(true, 'File upload failed :'+ error.message, {});
+        res.status(500).send(apiResponse);
+    } finally {
+        // Clean up: Delete the temporary file
+        if (req.file && req.file.path) {
+            fs.unlinkSync(req.file.path);
+        }
+    }
+};
+
+
+
+
 module.exports = {
     test: test,
     login: login,
@@ -1682,5 +1721,6 @@ module.exports = {
     getGroupsOfUser : getGroupsOfUser,
     validateToken : validateToken,
     getPreviousChatByGroupId : getPreviousChatByGroupId,
-    getUsersOfByGroupId : getUsersOfByGroupId
+    getUsersOfByGroupId : getUsersOfByGroupId,
+    uploadChatFiles : uploadChatFiles
 }

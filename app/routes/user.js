@@ -67,4 +67,5 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/validate-token`, validator.validateTokenValidate, userController.validateToken);
     app.get(`${baseUrl}/get-previous-chats`, auth.isAuthorized, validator.getPreviousChatByGroupIdValidate, userController.getPreviousChatByGroupId);
     app.get(`${baseUrl}/get-users-of-group`, auth.isAuthorized, validator.getPreviousChatByGroupIdValidate, userController.getUsersOfByGroupId);
+    app.post(`${baseUrl}/upload-chat-file`,  auth.isAuthorized, uploadLarge.single('file'), userController.uploadChatFiles);
 };
