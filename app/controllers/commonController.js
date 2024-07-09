@@ -18,8 +18,9 @@ const checkLib = require('../libs/checkLib');
 const AWS = require('aws-sdk');
 const path = require('path');
 const { tryCatch } = require('bull/lib/utils');
-const { object } = require('joi');
+const { object, func } = require('joi');
 const { group } = require('console');
+const { getPositionsList } = require('./userController');
 const postModel = mongoose.model('Post');
 const likeModel = mongoose.model('Like');
 const commentModel = mongoose.model('Comment');
@@ -143,9 +144,42 @@ function getContentType(fileName) {
     return mimeTypes['.' + ext] || 'application/octet-stream';
 }
 
+async function getAllUsers() {
+    let AllUsers = await UserModel.find({}, '-password');
+
+    AllUsers.map(async(user) => {
+        user.sports = await getSportById(user.game);
+        user.role = await getPositionsById(user.position);
+        delete user.password;
+        return user;
+    })
+
+    return AllUsers;
+}
+
+async function getSportById(game) {
+    if(!isValidMongoId(game))
+        return "";
+    let sport = await gameModel.findById(game);
+    return sport.name;
+}
+
+async function getPositionsById(position) {
+    if(!isValidMongoId(position))
+        return "";
+    let pos = await positionModel.findById(position);
+    return pos.name;
+}
+
+function isValidMongoId(id) {
+    const { ObjectId } = require('mongodb');
+    return ObjectId.isValid(id);
+}
+
 module.exports = {
     getUserById : getUserById,
     addChat : addChat,
     getUserGroups : getUserGroups,
-    getContentType : getContentType
+    getContentType : getContentType,
+    getAllUsers : getAllUsers
 }
