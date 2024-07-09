@@ -160,7 +160,7 @@ async function getAllUsers() {
 
 async function getSportById(game) {
     if(!isValidMongoId(game))
-        return "Viewer";
+        return "--";
     let sport = await gameModel.findById(game);
     return sport.name;
 }
