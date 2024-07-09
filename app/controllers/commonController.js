@@ -148,7 +148,7 @@ async function getAllUsers() {
     let AllUsers = await UserModel.find({}, '-password');
 
     let users = [];
-    await Promise.all(AllUsers.forEach(async(user) => {
+    await Promise.all(AllUsers.map(async(user) => {
         user.sports = await getSportById(user.game);
         user.role = await getPositionsById(user.position);
         delete user.password;
