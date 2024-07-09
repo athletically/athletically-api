@@ -145,14 +145,14 @@ function getContentType(fileName) {
 }
 
 async function getAllUsers() {
-    let AllUsers = await UserModel.find({}, '-password');
+    let AllUsers = await UserModel.find({}, '-password').lean();
 
     let users = [];
     await Promise.all(AllUsers.map(async(user) => {
         user.sports = await getSportById(user.game);
         user.role = await getPositionsById(user.position);
         delete user.password;
-        users.push(user)
+        users.push(user);
     }))
 
     return users;
@@ -160,14 +160,14 @@ async function getAllUsers() {
 
 async function getSportById(game) {
     if(!isValidMongoId(game))
-        return "";
+        return "Viewer";
     let sport = await gameModel.findById(game);
     return sport.name;
 }
 
 async function getPositionsById(position) {
     if(!isValidMongoId(position))
-        return "";
+        return "--";
     let pos = await positionModel.findById(position);
     return pos.name;
 }
