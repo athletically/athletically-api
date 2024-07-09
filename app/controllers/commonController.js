@@ -147,14 +147,15 @@ function getContentType(fileName) {
 async function getAllUsers() {
     let AllUsers = await UserModel.find({}, '-password');
 
-    AllUsers.map(async(user) => {
+    let users = [];
+    await Promise.all(AllUsers.forEach(async(user) => {
         user.sports = await getSportById(user.game);
         user.role = await getPositionsById(user.position);
         delete user.password;
-        return user;
-    })
+        users.push(user)
+    }))
 
-    return AllUsers;
+    return users;
 }
 
 async function getSportById(game) {
