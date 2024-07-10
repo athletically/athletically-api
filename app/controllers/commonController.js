@@ -144,8 +144,12 @@ function getContentType(fileName) {
     return mimeTypes['.' + ext] || 'application/octet-stream';
 }
 
-async function getAllUsers() {
-    let AllUsers = await UserModel.find({}, '-password').lean();
+async function getAllUsers(search, filter, sort) {
+    let match = {
+        name : (search) ? new RegExp(`^${search}`, 'i') : undefined,
+        game : (filter) ? filter : undefined
+    }
+    let AllUsers = await UserModel.find(match, '-password').lean();
 
     let users = [];
     await Promise.all(AllUsers.map(async(user) => {

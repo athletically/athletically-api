@@ -45,7 +45,11 @@ const s3 = new AWS.S3();
 const getAllUsers = async(req, res) => {
     try {
         
-        const users =  await commonController.getAllUsers();
+        let search = req.query.search;
+        let filter = req.query.filter;
+        let sort = req.query.sort;
+
+        const users =  await commonController.getAllUsers(search, filter, sort);
 
         let apiResponse = response.generate(false, 'Users found', users);
         res.status(200).send(apiResponse);
