@@ -25,4 +25,5 @@ const uploadLarge = multer({ storage: storagLarge });
 module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}/admin`;
     app.get(`${baseUrl}/getAllUsers`, adminController.getAllUsers);
+    app.get(`${baseUrl}/getGameList`, adminController.getGameList);
 };

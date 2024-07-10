@@ -55,6 +55,20 @@ const getAllUsers = async(req, res) => {
     }
 }
 
+const getGameList = async(req, res) => {
+    try {
+        
+        const gameList = await gameModel.find({status : 'active'}, '_id name');
+
+        let apiResponse = response.generate(false, 'Games found', gameList);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
-    getAllUsers: getAllUsers
+    getAllUsers: getAllUsers,
+    getGameList: getGameList
 }
