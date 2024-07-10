@@ -145,10 +145,12 @@ function getContentType(fileName) {
 }
 
 async function getAllUsers(search, filter, sort) {
-    let match = {
-        name : (search) ? new RegExp(`^${search}`, 'i') : undefined,
-        game : (filter) ? filter : undefined
-    }
+    let match = {}
+    if(search)
+        match.name = new RegExp(`^${search}`, 'i');
+    if(filter)
+        game = filter
+    
     console.log(match);
     let AllUsers = await UserModel.find(match, '-password').lean();
 
