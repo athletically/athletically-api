@@ -149,6 +149,7 @@ async function getAllUsers(search, filter, sort) {
         name : (search) ? new RegExp(`^${search}`, 'i') : undefined,
         game : (filter) ? filter : undefined
     }
+    console.log(match);
     let AllUsers = await UserModel.find(match, '-password').lean();
 
     let users = [];
