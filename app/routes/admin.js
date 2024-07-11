@@ -26,4 +26,5 @@ module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}/admin`;
     app.get(`${baseUrl}/getAllUsers`, adminController.getAllUsers);
     app.get(`${baseUrl}/getGameList`, adminController.getGameList);
+    app.get(`${baseUrl}/getUserDetails`, adminController.getUserDetails);
 };

@@ -72,7 +72,26 @@ const getGameList = async(req, res) => {
     }
 }
 
+const getUserDetails = async(req, res) => {
+    try {
+        const userDtls = await UserModel.findById(req.query.user_id).lean();
+        let apiResponse;
+        if(userDtls){
+            userDtls.sports = await commonController.getSportById(userDtls.game);
+            userDtls.role = await commonController.getPositionsById(userDtls.position);
+            apiResponse = response.generate(false, 'User found', userDtls);
+        }
+        else
+            apiResponse = response.generate(false, 'User Not found', {});
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
-    getGameList: getGameList
+    getGameList: getGameList,
+    getUserDetails: getUserDetails
 }

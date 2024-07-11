@@ -162,6 +162,25 @@ async function getAllUsers(search, filter, sort) {
         users.push(user);
     }))
 
+    if (sort) {
+        switch (sort) {
+            case 'score_l2h':
+                users.sort((a, b) => (a.score > b.score ? 1 : -1))
+                break;
+            case 'score_h2l':
+                users.sort((a, b) => (a.score > b.score ? -1 : 1))
+                break;
+            case 'date_o2n':
+                users.sort((a,b) =>  new Date(a.created_on) - new Date(b.created_on));
+                break;
+            case 'date_n2o':
+                users.sort((a,b) =>  new Date(b.created_on) - new Date(a.created_on));
+                break;
+            default:
+                break;
+        }
+    }
+
     return users;
 }
 
@@ -189,5 +208,7 @@ module.exports = {
     addChat : addChat,
     getUserGroups : getUserGroups,
     getContentType : getContentType,
-    getAllUsers : getAllUsers
+    getAllUsers : getAllUsers,
+    getSportById : getSportById,
+    getPositionsById : getPositionsById
 }
