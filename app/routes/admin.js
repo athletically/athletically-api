@@ -27,4 +27,7 @@ module.exports.setRouter = (app) => {
     app.get(`${baseUrl}/getAllUsers`, adminController.getAllUsers);
     app.get(`${baseUrl}/getGameList`, adminController.getGameList);
     app.get(`${baseUrl}/getUserDetails`, adminController.getUserDetails);
+    app.post(`${baseUrl}/updateUser`, adminController.updateUser);
+    app.get(`${baseUrl}/getAllReels`, adminController.getAllReels);
+    app.post(`${baseUrl}/updateReel`, adminController.updateReel);
 };

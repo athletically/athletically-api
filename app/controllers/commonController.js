@@ -21,6 +21,8 @@ const { tryCatch } = require('bull/lib/utils');
 const { object, func } = require('joi');
 const { group } = require('console');
 const { getPositionsList } = require('./userController');
+const { match } = require('assert');
+const { type } = require('os');
 const postModel = mongoose.model('Post');
 const likeModel = mongoose.model('Like');
 const commentModel = mongoose.model('Comment');
@@ -203,6 +205,87 @@ function isValidMongoId(id) {
     return ObjectId.isValid(id);
 }
 
+async function getAllReels(search, filter, sortParam) {
+    let match = {}
+    let sort = {}
+    if (search) {
+        match.$or = [
+            { text: { $regex: search, $options: "i" } },
+            { "userdtls.name": { $regex: search, $options: "i" } }
+        ];
+    }
+    
+    if(filter)
+        match.status = filter
+
+    if (sortParam) {
+        switch (sortParam) {
+            case 'views_l2h':
+                sort.views = 1;
+                break;
+            case 'views_h2l':
+                sort.views = -1;
+                break;
+            case 'likes_l2h':
+                sort.likes = 1;
+                break;
+            case 'likes_h2l':
+                sort.likes = -1;
+                break;
+            case 'date_o2n':
+                sort.created_on = 1;
+                break;
+            case 'date_n2o':
+                sort.created_on = -1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    const pipeline = [
+        {
+            $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: "_id",
+                as: "userdtls"
+            }
+        },
+        {
+            $unwind: "$userdtls"
+        },
+        {
+            $match: match
+        },
+        {
+            $project: {
+                _id : 1,
+                user_id : 1,
+                reel_link : 1,
+                text : 1,
+                likes : 1,
+                views : 1,
+                comments : 1,
+                type : 1,
+                status : 1,
+                created_on : 1,
+                name: '$userdtls.name'
+            }
+        }
+    ]
+    
+    if(Object.keys(sort).length > 0)
+        pipeline.push({
+            $sort: sort
+        });
+
+    console.log(pipeline);
+
+    const reels = await postModel.aggregate(pipeline)
+    return reels;
+}
+
 module.exports = {
     getUserById : getUserById,
     addChat : addChat,
@@ -210,5 +293,6 @@ module.exports = {
     getContentType : getContentType,
     getAllUsers : getAllUsers,
     getSportById : getSportById,
-    getPositionsById : getPositionsById
+    getPositionsById : getPositionsById,
+    getAllReels : getAllReels
 }

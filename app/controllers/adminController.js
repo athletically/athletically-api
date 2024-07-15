@@ -90,8 +90,74 @@ const getUserDetails = async(req, res) => {
     }
 }
 
+const updateUser = async(req, res) => {
+    try {
+        let apiResponse;
+        let user = req.body.user;
+        let newScore = user.score;
+        let user_id = user._id;
+
+        let isUpdated = await UserModel.findByIdAndUpdate(user_id, { score : newScore });
+
+        if(isUpdated)
+            apiResponse = response.generate(false, 'User Updated', {});
+        else
+            apiResponse = response.generate(true, 'User not updated', {});
+
+            res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getAllReels = async(req, res) => {
+    try {
+        
+        let search = req.query.search;
+        let filter = req.query.filter;
+        let sort = req.query.sort;
+
+        const reels =  await commonController.getAllReels(search, filter, sort);
+
+        let apiResponse;
+
+        if(reels.length > 0)
+            apiResponse = response.generate(false, 'Reels found', reels);
+        else
+            apiResponse = response.generate(false, 'Reels not found', []);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const updateReel = async(req, res) => {
+    try {
+        let apiResponse;
+        let reel_id = req.body.reel_id;
+        let status = req.body.status;
+
+        let isUpdated = await postModel.findByIdAndUpdate(reel_id, { status : status });
+
+        if(isUpdated)
+            apiResponse = response.generate(false, 'Reel Updated', {});
+        else
+            apiResponse = response.generate(true, 'Reel not updated', {});
+
+            res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
-    getUserDetails: getUserDetails
+    getUserDetails: getUserDetails,
+    updateUser: updateUser,
+    getAllReels: getAllReels,
+    updateReel: updateReel
 }
