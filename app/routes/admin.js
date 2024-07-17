@@ -26,8 +26,12 @@ module.exports.setRouter = (app) => {
     let baseUrl = `${appConfig.apiVersion}/admin`;
     app.get(`${baseUrl}/getAllUsers`, adminController.getAllUsers);
     app.get(`${baseUrl}/getGameList`, adminController.getGameList);
+    app.get(`${baseUrl}/getPositionList`, adminController.getPositionList);
     app.get(`${baseUrl}/getUserDetails`, adminController.getUserDetails);
     app.post(`${baseUrl}/updateUser`, adminController.updateUser);
     app.get(`${baseUrl}/getAllReels`, adminController.getAllReels);
     app.post(`${baseUrl}/updateReel`, adminController.updateReel);
+    app.get(`${baseUrl}/getAllGroups`, adminController.getAllGroups);
+    app.post(`${baseUrl}/addGroup`, adminController.addGroup);
+    app.post(`${baseUrl}/modifyGroup`, adminController.modifyGroup);
 };

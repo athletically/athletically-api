@@ -153,11 +153,104 @@ const updateReel = async(req, res) => {
     }
 }
 
+const getAllGroups = async(req, res) => {
+    try {
+        
+        let search = req.query.search;
+        let filter = req.query.filter;
+        let sort = req.query.sort;
+
+        const groups =  await commonController.getAllGroups(search, filter, sort);
+
+        let apiResponse;
+
+        if(groups.length > 0)
+            apiResponse = response.generate(false, 'Groups found', groups);
+        else
+            apiResponse = response.generate(false, 'Groups not found', []);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const addGroup = async(req, res) => {
+    try{
+        const newGroup = new groupModel({
+            game_id : req.body.game_id,
+            position_id : req.body.position_id,
+            name : req.body.name
+        })
+        await newGroup.save();
+
+        let apiResponse = response.generate(false, 'Added Successfully', {});
+        res.status(200).send(apiResponse);
+    }
+    catch(error){
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const getPositionList = async(req, res) => {
+    try {
+        
+        const game_id = req.query.game_id;
+        const match = {};
+        if(game_id)
+            match.game_id = game_id;
+        match.status = 'active';
+
+        const positionList = await positionModel.find(match, '_id name');
+
+        let apiResponse = response.generate(false, 'Positions found', positionList);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const modifyGroup = async(req, res) => {
+    try {
+        let apiResponse;
+        let group_id = req.body.group_id;
+        let status = req.body.status;
+        let name = req.body.name;
+
+        const match = {};
+
+        if(name)
+            match.name = name;
+        if(status)
+            match.status = status;
+
+        let isUpdated = await groupModel.findByIdAndUpdate(group_id, match);
+
+        if(isUpdated)
+            apiResponse = response.generate(false, 'Group Updated', {});
+        else
+            apiResponse = response.generate(true, 'Group not updated', {});
+
+        console.log(isUpdated);
+
+            res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
     getUserDetails: getUserDetails,
     updateUser: updateUser,
     getAllReels: getAllReels,
-    updateReel: updateReel
+    updateReel: updateReel,
+    getAllGroups: getAllGroups,
+    addGroup: addGroup,
+    getPositionList: getPositionList,
+    modifyGroup: modifyGroup
 }

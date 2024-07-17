@@ -286,6 +286,87 @@ async function getAllReels(search, filter, sortParam) {
     return reels;
 }
 
+async function getAllGroups(search, filter, sortParam) {
+    let match = {}
+    let sort = {}
+    if (search) {
+        match.$or = [
+            { text: { $regex: search, $options: "i" } },
+            { "gamedtls.name": { $regex: search, $options: "i" } },
+            { "positiondtls.name": { $regex: search, $options: "i" } }
+        ];
+    }
+    
+    if(filter)
+        match.status = filter
+
+    if (sortParam) {
+        switch (sortParam) {
+            case 'date_o2n':
+                sort.created_on = 1;
+                break;
+            case 'date_n2o':
+                sort.created_on = -1;
+                break;
+            default:
+                break;
+        }
+    }
+
+    const pipeline = [
+        {
+          $lookup: {
+            from: 'games',
+            localField: 'game_id',
+            foreignField: '_id',
+            as: 'gamedtls'
+          }
+        },
+        {
+          $unwind: '$gamedtls'
+        },
+        {
+          $lookup: {
+            from: 'positions',
+            localField: 'position_id',
+            foreignField: '_id',
+            as: 'positiondtls'
+          }
+        },
+        {
+          $unwind: '$positiondtls'
+        },
+        {
+          $match: match
+        },
+        {
+          $sort: {
+            created_on: -1
+          }
+        },
+        {
+          $project: {
+            _id : 1,
+            name : 1,
+            game : '$gamedtls.name',
+            position : '$positiondtls.name',
+            status : 1,
+            created_on : 1
+          }
+        }
+    ]
+    
+    if(Object.keys(sort).length > 0)
+        pipeline.push({
+            $sort: sort
+        });
+
+    console.log(pipeline);
+
+    const groups = await groupModel.aggregate(pipeline)
+    return groups;
+}
+
 module.exports = {
     getUserById : getUserById,
     addChat : addChat,
@@ -294,5 +375,6 @@ module.exports = {
     getAllUsers : getAllUsers,
     getSportById : getSportById,
     getPositionsById : getPositionsById,
-    getAllReels : getAllReels
+    getAllReels : getAllReels,
+    getAllGroups : getAllGroups
 }
