@@ -242,6 +242,22 @@ const modifyGroup = async(req, res) => {
     }
 }
 
+const getGroupDetails = async(req, res) => {
+    try {
+        const groupDtls = await groupModel.findById(req.query.group_id).lean();
+        let apiResponse;
+        if(groupDtls){
+            apiResponse = response.generate(false, 'Group found', userDtls);
+        }
+        else
+            apiResponse = response.generate(false, 'Group Not found', {});
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
@@ -252,5 +268,6 @@ module.exports = {
     getAllGroups: getAllGroups,
     addGroup: addGroup,
     getPositionList: getPositionList,
-    modifyGroup: modifyGroup
+    modifyGroup: modifyGroup,
+    getGroupDetails: getGroupDetails
 }
