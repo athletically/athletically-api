@@ -291,7 +291,7 @@ async function getAllGroups(search, filter, sortParam) {
     let sort = {}
     if (search) {
         match.$or = [
-            { text: { $regex: search, $options: "i" } },
+            { name: { $regex: search, $options: "i" } },
             { "gamedtls.name": { $regex: search, $options: "i" } },
             { "positiondtls.name": { $regex: search, $options: "i" } }
         ];
