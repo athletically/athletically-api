@@ -247,7 +247,7 @@ const getGroupDetails = async(req, res) => {
         const groupDtls = await groupModel.findById(req.query.group_id).lean();
         let apiResponse;
         if(groupDtls){
-            apiResponse = response.generate(false, 'Group found', userDtls);
+            apiResponse = response.generate(false, 'Group found', groupDtls);
         }
         else
             apiResponse = response.generate(false, 'Group Not found', {});
