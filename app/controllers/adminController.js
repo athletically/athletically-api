@@ -258,6 +258,42 @@ const getGroupDetails = async(req, res) => {
     }
 }
 
+const adminLogin = async(req, res) => {
+    try {
+        const { username, password } = req.body;
+
+        let finduser = await UserModel.findOne({ username: username }).select('-__v').lean();
+
+        if (check.isEmpty(finduser)) {
+            res.status(404);
+            throw new Error('User not Registered!');
+        };
+        // if ((finduser.google_token != '') || (await passwordLib.verify(req.body.password, finduser.password))) {   
+        if(finduser.password === password){
+            console.log('verified!');
+            if (!finduser.is_active) {
+                res.status(401);
+                throw new Error('Authorization Failed!');
+            } else {
+                let payload = {
+                    user_id : finduser._id,
+                    name: finduser.name,
+                    username: finduser.username,
+                    token: await tokenLib.generateToken(finduser)
+                };
+                let apiResponse = response.generate(false, 'logged in!', payload);
+                res.status(200).send(apiResponse);
+            }
+        } else {
+            res.status(401);
+            throw new Error('incorrect password!');
+        }
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
@@ -269,5 +305,6 @@ module.exports = {
     addGroup: addGroup,
     getPositionList: getPositionList,
     modifyGroup: modifyGroup,
-    getGroupDetails: getGroupDetails
+    getGroupDetails: getGroupDetails,
+    adminLogin: adminLogin
 }

@@ -35,4 +35,5 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/addGroup`, adminController.addGroup);
     app.post(`${baseUrl}/modifyGroup`, adminController.modifyGroup);
     app.get(`${baseUrl}/getGroupDetails`, adminController.getGroupDetails);
+    app.post(`${baseUrl}/login`, adminController.adminLogin);
 };
