@@ -10,6 +10,7 @@ const tokenLib = require('../libs/tokenLib');
 const passwordLib = require('../libs/passwordLib');
 const mongoose = require('mongoose');
 const UserModel = mongoose.model('User');
+const AdminsModel = mongoose.model('Admins');
 const otpModel = mongoose.model('OTP');
 const uploadLib = require('../libs/uploadLib');
 const timeLib = require('../libs/timeLib');
@@ -262,7 +263,7 @@ const adminLogin = async(req, res) => {
     try {
         const { username, password } = req.body;
 
-        let finduser = await UserModel.findOne({ username: username }).select('-__v').lean();
+        let finduser = await AdminsModel.findOne({ username: username }).select('-__v').lean();
 
         if (check.isEmpty(finduser)) {
             res.status(404);

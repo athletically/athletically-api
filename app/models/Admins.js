@@ -9,7 +9,7 @@ const { string } = require('joi');
 const mongoose = require('mongoose'),
   Schema = mongoose.Schema;
 
-let userSchema = new Schema({
+let adminsSchema = new Schema({
   password: {
     type: String,
     default: ''
@@ -33,4 +33,4 @@ let userSchema = new Schema({
 })
 
 
-mongoose.model('User', userSchema);
+mongoose.model('Admins', adminsSchema);
