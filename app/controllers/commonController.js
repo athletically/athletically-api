@@ -20,7 +20,6 @@ const path = require('path');
 const { tryCatch } = require('bull/lib/utils');
 const { object, func } = require('joi');
 const { group } = require('console');
-const { getPositionsList } = require('./userController');
 const { match } = require('assert');
 const { type } = require('os');
 const postModel = mongoose.model('Post');
