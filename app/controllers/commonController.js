@@ -367,6 +367,34 @@ async function getAllGroups(search, filter, sortParam) {
     return groups;
 }
 
+const assignGroupsToUser = async(game_id, position_id, user_id) => {
+    try {
+
+        if(game_id && position_id){
+            const groups = await groupModel.find({ game_id : game_id, position_id : position_id, status : 'active' });
+            if(groups.length > 0){
+                await Promise.all(groups.map(async group => {
+                    let findGroup = await userGroupMappingTable.findOne({user_id : user_id, group_id : group._id});
+                    if(findGroup && findGroup.status === 'inactive'){
+                        findGroup.status = 'active';
+                        await findGroup.save();
+                    }
+                    else if(!findGroup){
+                        let newGroupUserMapping = new userGroupMappingTable({
+                            user_id : user_id,
+                            group_id : group._id
+                        })
+                        await newGroupUserMapping.save();
+                    }
+                }))
+            }
+        }
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
+
 module.exports = {
     getUserById : getUserById,
     addChat : addChat,
@@ -376,5 +404,6 @@ module.exports = {
     getSportById : getSportById,
     getPositionsById : getPositionsById,
     getAllReels : getAllReels,
-    getAllGroups : getAllGroups
+    getAllGroups : getAllGroups,
+    assignGroupsToUser : assignGroupsToUser
 }
