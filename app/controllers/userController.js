@@ -71,7 +71,7 @@ let login = async (req, res) => {
                     updated: (finduser.user_type !== 'viewer'),
                     token: await tokenLib.generateToken(finduser)
                 };
-                await commonController.assignGroupsToUser(finduser.group_id, finduser.position_id, finduser._id);
+                await commonController.assignGroupsToUser(finduser.game, finduser.position, finduser._id);
                 let apiResponse = response.generate(false, 'logged in!', payload);
                 res.status(200).send(apiResponse);
             }
