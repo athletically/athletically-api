@@ -740,6 +740,11 @@ const addGroup = async(req, res) => {
 const getUserGroupList = async(req, res) => {
     try {
         const user_id = req.query.user_id;
+
+        const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id)});
+
+        await commonController.assignGroupsToUser(finduser.game, finduser.position, finduser._id);
+
         const groups = await userGroupMappingTable.aggregate([
             {
               $match: {
