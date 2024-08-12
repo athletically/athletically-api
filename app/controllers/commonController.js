@@ -368,7 +368,7 @@ async function getAllGroups(search, filter, sortParam) {
 
 const assignGroupsToUser = async(game_id, position_id, user_id) => {
     try {
-
+        console.log(game_id);
         if(game_id && position_id){
             const groups = await groupModel.find({ game_id : game_id, position_id : position_id, status : 'active' });
             if(groups.length > 0){

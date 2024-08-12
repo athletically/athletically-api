@@ -295,6 +295,97 @@ const adminLogin = async(req, res) => {
     }
 }
 
+const getGames = async(req, res) => {
+    try {
+        const {search, filter} = req.query;
+        const match = {};
+
+        if(search)
+            match.name = { $regex: search, $options: "i" };
+        if(filter)
+            match.status = filter;
+
+        const gameList = await gameModel.find(match);
+        let apiResponse;
+        if(gameList.length > 0){
+            apiResponse = response.generate(false, 'Game List', gameList);
+        }
+        else{
+            apiResponse = response.generate(false, 'Games Not Found', []);
+        }
+        res.status(200).send(apiResponse);        
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, []);
+        res.status(500).send(apiResponse);
+    }
+}
+
+const addGame = async(req, res) => {
+    try {
+        let name = req.body.game_name;
+        if(!name){
+            let apiResponse = response.generate(true, "Game Name Cannot be empty", {});
+            return res.status(200).send(apiResponse);
+        }
+        let existing = await gameModel.find({name});
+        if(existing.length > 0){
+            let apiResponse = response.generate(true, "Game Already Exist", {});
+            return res.status(200).send(apiResponse);
+        }
+        const newGame = new gameModel({
+            name : name
+        });
+
+        await newGame.save();
+        let apiResponse = response.generate(false, "Game Added Successfully", newGame);
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
+const modifyGame = async(req, res) => {
+    try {
+        let apiResponse;
+        let game_id = req.body.game_id;
+        let status = req.body.status;
+        let name = req.body.game_name;
+
+        if(!name){
+            let apiResponse = response.generate(true, "Game Name Cannot be empty", {});
+            return res.status(200).send(apiResponse);
+        }
+        let existing = await gameModel.find({name});
+        
+        if(existing.length > 0 && existing[0]._id.toString() !== game_id){
+            let apiResponse = response.generate(true, "Game Already Exist", {});
+            return res.status(200).send(apiResponse);
+        }
+
+        const match = {};
+
+        if(name)
+            match.name = name;
+        if(status)
+            match.status = status;
+
+        let isUpdated = await gameModel.findByIdAndUpdate(game_id, match, { new : true });
+
+        if(isUpdated)
+            apiResponse = response.generate(false, 'game Updated', {});
+        else
+            apiResponse = response.generate(true, 'game not updated', {});
+
+        console.log(isUpdated);
+
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
@@ -307,5 +398,8 @@ module.exports = {
     getPositionList: getPositionList,
     modifyGroup: modifyGroup,
     getGroupDetails: getGroupDetails,
-    adminLogin: adminLogin
+    adminLogin: adminLogin,
+    addGame: addGame,
+    getGames: getGames,
+    modifyGame: modifyGame
 }

@@ -36,4 +36,7 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/modifyGroup`, adminController.modifyGroup);
     app.get(`${baseUrl}/getGroupDetails`, adminController.getGroupDetails);
     app.post(`${baseUrl}/login`, adminController.adminLogin);
+    app.post(`${baseUrl}/addGame`,  adminController.addGame);
+    app.post(`${baseUrl}/modifyGame`, adminController.modifyGame);
+    app.get(`${baseUrl}/getGames`, adminController.getGames);
 };
