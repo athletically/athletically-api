@@ -327,7 +327,7 @@ const addGame = async(req, res) => {
             let apiResponse = response.generate(true, "Game Name Cannot be empty", {});
             return res.status(200).send(apiResponse);
         }
-        let existing = await gameModel.find({name});
+        let existing = await gameModel.find({ $regex: name, $options: `i` });
         if(existing.length > 0){
             let apiResponse = response.generate(true, "Game Already Exist", {});
             return res.status(200).send(apiResponse);
@@ -356,7 +356,7 @@ const modifyGame = async(req, res) => {
             let apiResponse = response.generate(true, "Game Name Cannot be empty", {});
             return res.status(200).send(apiResponse);
         }
-        let existing = await gameModel.find({name});
+        let existing = await gameModel.find({ $regex: name, $options: `i` });
         
         if(existing.length > 0 && existing[0]._id.toString() !== game_id){
             let apiResponse = response.generate(true, "Game Already Exist", {});
