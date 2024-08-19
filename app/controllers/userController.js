@@ -539,7 +539,7 @@ const deleteAllReels = async(req, res) => {
 
 const getGameList = async(req, res) => {
     try {
-        const gameList = await gameModel.find({status : 'active'}, 'name');
+        const gameList = await gameModel.find({status : 'active'}, 'name').sort({ name : 1 });
         let apiResponse = response.generate(false, 'Game List', gameList);
         res.status(200).send(apiResponse);        
     } catch (error) {
