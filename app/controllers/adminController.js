@@ -352,7 +352,7 @@ const modifyGame = async(req, res) => {
         let apiResponse;
         let game_id = req.body.game_id;
         let status = req.body.status;
-        let name = req.body.game_name;
+        let name = req.body.name;
 
         if(name){
             let existing = await gameModel.find({ $regex: name, $options: `i` });
