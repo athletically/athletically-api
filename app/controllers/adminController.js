@@ -386,6 +386,22 @@ const modifyGame = async(req, res) => {
     }
 }
 
+const getGameDetails = async(req, res) => {
+    try {
+        const gameDtls = await gameModel.findById(req.query.game_id).lean();
+        let apiResponse;
+        if(gameDtls){
+            apiResponse = response.generate(false, 'Game found', gameDtls);
+        }
+        else
+            apiResponse = response.generate(false, 'Game Not found', {});
+        res.status(200).send(apiResponse);
+    } catch (error) {
+        let apiResponse = response.generate(true, error.message, {});
+        res.status(500).send(apiResponse);
+    }
+}
+
 module.exports = {
     getAllUsers: getAllUsers,
     getGameList: getGameList,
@@ -401,5 +417,6 @@ module.exports = {
     adminLogin: adminLogin,
     addGame: addGame,
     getGames: getGames,
-    modifyGame: modifyGame
+    modifyGame: modifyGame,
+    getGameDetails: getGameDetails
 }
