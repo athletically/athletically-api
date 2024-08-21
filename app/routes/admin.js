@@ -39,4 +39,5 @@ module.exports.setRouter = (app) => {
     app.post(`${baseUrl}/addGame`,  adminController.addGame);
     app.post(`${baseUrl}/modifyGame`, adminController.modifyGame);
     app.get(`${baseUrl}/getGames`, adminController.getGames);
+    app.get(`${baseUrl}/getGameDetails`, adminController.getGameDetails);
 };
