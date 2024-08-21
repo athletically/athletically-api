@@ -354,11 +354,7 @@ const modifyGame = async(req, res) => {
         let status = req.body.status;
         let name = req.body.game_name;
 
-        if(!name){
-            let apiResponse = response.generate(true, "Game Name Cannot be empty", {});
-            return res.status(200).send(apiResponse);
-        }
-        else{
+        if(name){
             let existing = await gameModel.find({ $regex: name, $options: `i` });
         
             if(existing.length > 0 && existing[0]._id.toString() !== game_id){
