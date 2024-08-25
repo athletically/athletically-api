@@ -410,15 +410,18 @@ let getAllReelsOfUser = async(req, res) => {
             return;
         }
 
-        rawdata.forEach(row => {
+        await Promise.all(rawdata.forEach(async row => {
+            let likedByUser = await likeModel.find({ liked_by : new mongoose.Types.ObjectId(req.user._id), reel_id : new mongoose.Types.ObjectId(row._id) });
+            let isLiked = (likedByUser.length > 0) ? true : false;
             returndata.push({
                 id : row._id,
                 title : row.text,
                 url : row.reel_link,
                 likes : row.likes,
-                comment : 0
+                comment : 0,
+                isLiked : isLiked
             })
-        })
+        }))
 
         let apiResponse = response.generate(false, 'All Reels Of User', returndata);
         res.status(200).send(apiResponse);
