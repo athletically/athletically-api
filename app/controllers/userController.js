@@ -35,9 +35,9 @@ const commonController = require('./commonController');
 const DEFAULT_USER_IMAGE = "https://st3.depositphotos.com/6672868/13701/v/380/depositphotos_137014128-stock-illustration-user-profile-icon.jpg";
 
 AWS.config.update({
-  accessKeyId: process.env.AWS_KEY,
-  secretAccessKey: process.env.AWS_SECRET_KEY,
-  region: process.env.AWS_REGION,
+    accessKeyId: process.env.AWS_KEY,
+    secretAccessKey: process.env.AWS_SECRET_KEY,
+    region: process.env.AWS_REGION,
 });
 
 const s3 = new AWS.S3();
@@ -57,14 +57,14 @@ let login = async (req, res) => {
             res.status(404);
             throw new Error('User not Registered!');
         };
-        if ((finduser.google_token != '') || (await passwordLib.verify(req.body.password, finduser.password))) {   
+        if ((finduser.google_token != '') || (await passwordLib.verify(req.body.password, finduser.password))) {
             console.log('verified!');
             if (!finduser.is_active) {
                 res.status(401);
                 throw new Error('Authorization Failed!');
             } else {
                 let payload = {
-                    user_id : finduser._id,
+                    user_id: finduser._id,
                     username: finduser.username,
                     email: finduser.email,
                     user_type: finduser.user_type,
@@ -95,14 +95,14 @@ let register = async (req, res) => {
             throw new Error('Email already in use!');
         };
         let newUser;
-        if(req.body.hasOwnProperty('idToken') && req.body.idToken != ''){
+        if (req.body.hasOwnProperty('idToken') && req.body.idToken != '') {
             newUser = new UserModel({
                 name: req.body.name,
                 email: req.body.email.toLowerCase(),
                 google_token: req.body.idToken,
                 image: req.body.photo
             })
-        }else{
+        } else {
             newUser = new UserModel({
                 name: req.body.name,
                 email: req.body.email.toLowerCase(),
@@ -146,7 +146,7 @@ let sendOtpForgotPassword = async (req, res) => {
                     created_on: timeLib.now()
                 })
                 if (await newOTP.save()) {
-                    let apiResponse = response.generate(false, `An OTP has been sent to your registered email id : ${email}.` , {email});
+                    let apiResponse = response.generate(false, `An OTP has been sent to your registered email id : ${email}.`, { email });
                     res.status(200).send(apiResponse);
                 }
                 else {
@@ -332,26 +332,26 @@ const homePageReels = async (req, res) => {
 
         let rows = await UserModel.aggregate([
             {
-              $match: {
-                is_active : true
-              }
+                $match: {
+                    is_active: true
+                }
             },
             {
-              $lookup: {
-                from: 'posts',
-                localField: '_id',
-                foreignField: 'user_id',
-                as: 'reels'
-              }
+                $lookup: {
+                    from: 'posts',
+                    localField: '_id',
+                    foreignField: 'user_id',
+                    as: 'reels'
+                }
             },
             {
-              $match: {
-                reels: { $ne : [] },
-              }
+                $match: {
+                    reels: { $ne: [] },
+                }
             }
         ]);
 
-        if(rows.length < 1){
+        if (rows.length < 1) {
             let apiResponse = response.generate(false, 'No Reels found', []);
             res.status(200).send(apiResponse);
         }
@@ -367,23 +367,23 @@ const homePageReels = async (req, res) => {
 
             let c = 0;
             row.reels.forEach(reel => {
-                if(reel.status === 'active' && reel.type != 'match' && reel.type != 'podcast' && c < 2){
+                if (reel.status === 'active' && reel.type != 'match' && reel.type != 'podcast' && c < 2) {
                     temp.reels.push({
-                        title : reel.text,
-                        url : reel.reel_link,
-                        id : reel._id,
-                        likes : reel.likes,
-                        comment : 0
+                        title: reel.text,
+                        url: reel.reel_link,
+                        id: reel._id,
+                        likes: reel.likes,
+                        comment: 0
                     })
                     c++;
                 }
             })
 
-            if(temp.reels.length > 0)
+            if (temp.reels.length > 0)
                 returndata.push(temp);
         })
 
-    
+
         let apiResponse = response.generate(false, 'Reels Found', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
@@ -392,34 +392,34 @@ const homePageReels = async (req, res) => {
     }
 }
 
-let getAllReelsOfUser = async(req, res) => {
+let getAllReelsOfUser = async (req, res) => {
     try {
 
-        let userdtls = await postModel.findOne({ _id : new mongoose.Types.ObjectId(req.body.reel_id) });
+        let userdtls = await postModel.findOne({ _id: new mongoose.Types.ObjectId(req.body.reel_id) });
 
         let user_id = userdtls.user_id;
 
-        let rawdata = await postModel.find({ user_id : user_id, status : 'active' });
+        let rawdata = await postModel.find({ user_id: user_id, status: 'active' });
 
 
         let returndata = [];
 
-        if(rawdata.length < 1){
+        if (rawdata.length < 1) {
             let apiResponse = response.generate(false, 'No reels of the user is found', []);
             res.status(200).send(apiResponse);
             return;
         }
 
         await Promise.all(rawdata.forEach(async row => {
-            let likedByUser = await likeModel.find({ liked_by : new mongoose.Types.ObjectId(req.user._id), reel_id : new mongoose.Types.ObjectId(row._id) });
+            let likedByUser = await likeModel.find({ liked_by: new mongoose.Types.ObjectId(req.user._id), reel_id: new mongoose.Types.ObjectId(row._id) });
             let isLiked = (likedByUser.length > 0) ? true : false;
             returndata.push({
-                id : row._id,
-                title : row.text,
-                url : row.reel_link,
-                likes : row.likes,
-                comment : 0,
-                isLiked : isLiked
+                id: row._id,
+                title: row.text,
+                url: row.reel_link,
+                likes: row.likes,
+                comment: 0,
+                isLiked: isLiked
             })
         }))
 
@@ -431,7 +431,7 @@ let getAllReelsOfUser = async(req, res) => {
     }
 }
 
-const createReels = async(req, res) => {
+const createReels = async (req, res) => {
     try {
         const bucketName = process.env.S3_BUCKET;
         const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
@@ -452,11 +452,11 @@ const createReels = async(req, res) => {
             } else {
                 const objectUrl = `https://${bucketName}.s3.${process.env.AWS_REGION}.amazonaws.com/reels/${fileName}`;
                 const newPost = new postModel({
-                    'user_id' : req.body.user_id,
-                    'reel_link' : objectUrl,
-                    'text' : req.body.post,
-                    'status' : 'active',
-                    'created_on' : Date.now()
+                    'user_id': req.body.user_id,
+                    'reel_link': objectUrl,
+                    'text': req.body.post,
+                    'status': 'active',
+                    'created_on': Date.now()
                 });
 
                 const added = await newPost.save();
@@ -473,17 +473,17 @@ const createReels = async(req, res) => {
     }
 }
 
-const likePost = async(req, res) => {
+const likePost = async (req, res) => {
     try {
-        
+
         let likeData = new likeModel({
-            liked_by : req.body.liked_by,
-            reel_id : req.body.reel_id
+            liked_by: req.body.liked_by,
+            reel_id: req.body.reel_id
         });
         await likeData.save();
 
-        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { likes: 1 } }, { new : true });
-        
+        let updatePost = await postModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.reel_id) }, { $inc: { likes: 1 } }, { new: true });
+
         let apiResponse = response.generate(false, '+1 like', updatePost);
         res.status(200).send(apiResponse);
 
@@ -495,13 +495,13 @@ const likePost = async(req, res) => {
 }
 
 
-const dislikePost = async(req, res) => {
+const dislikePost = async (req, res) => {
     try {
-        
-        await likeModel.deleteOne({ liked_by : req.body.disliked_by, reel_id : req.body.reel_id });
 
-        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { likes: -1 } }, { new : true });
-        
+        await likeModel.deleteOne({ liked_by: req.body.disliked_by, reel_id: req.body.reel_id });
+
+        let updatePost = await postModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.reel_id) }, { $inc: { likes: -1 } }, { new: true });
+
         let apiResponse = response.generate(false, '+1 like', updatePost);
         res.status(200).send(apiResponse);
 
@@ -512,18 +512,18 @@ const dislikePost = async(req, res) => {
 
 }
 
-const commentPost = async(req, res) => {
+const commentPost = async (req, res) => {
     try {
-        
+
         let commentData = new commentModel({
-            comment_by : req.body.comment_by,
-            reel_id : req.body.reel_id,
-            comment : req.body.comment
+            comment_by: req.body.comment_by,
+            reel_id: req.body.reel_id,
+            comment: req.body.comment
         });
         await commentData.save();
 
-        let updatePost = await postModel.updateOne({_id : mongoose.Types.ObjectId(req.body.reel_id)}, { $inc: { comments: 1 } }, { new : true });
-        
+        let updatePost = await postModel.updateOne({ _id: mongoose.Types.ObjectId(req.body.reel_id) }, { $inc: { comments: 1 } }, { new: true });
+
         let apiResponse = response.generate(false, '+1 comment added', updatePost);
         res.status(200).send(apiResponse);
 
@@ -534,60 +534,60 @@ const commentPost = async(req, res) => {
 
 }
 
-const deleteAllReels = async(req, res) => {
-    await postModel.deleteMany({ status : 'active' });
+const deleteAllReels = async (req, res) => {
+    await postModel.deleteMany({ status: 'active' });
     res.send('success');
 }
 
 
-const getGameList = async(req, res) => {
+const getGameList = async (req, res) => {
     try {
-        const gameList = await gameModel.find({status : 'active'}, 'name').sort({ name : 1 });
+        const gameList = await gameModel.find({ status: 'active' }, 'name').sort({ name: 1 });
         let apiResponse = response.generate(false, 'Game List', gameList);
-        res.status(200).send(apiResponse);        
+        res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
     }
 }
 
-const getPositionsList = async(req, res) => {
+const getPositionsList = async (req, res) => {
 
     try {
-        const positionList = await positionModel.find({game_id : new mongoose.Types.ObjectId(req.query.game_id), status : 'active'}, 'name');
+        const positionList = await positionModel.find({ game_id: new mongoose.Types.ObjectId(req.query.game_id), status: 'active' }, 'name');
         let apiResponse = response.generate(false, 'Position List', positionList);
-        res.status(200).send(apiResponse);        
+        res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
     }
 }
 
-const updateProfile = async(req, res) => {
+const updateProfile = async (req, res) => {
     try {
         const user_id = req.body.user_id;
-        const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id) });
+        const finduser = await UserModel.findOne({ _id: new mongoose.Types.ObjectId(user_id) });
         let objectUrl = '';
 
-        if((req.body.user_type === 'player' || req.body.user_type === 'other') && (req.body.game_id === '' || req.body.game_id === undefined)){
+        if ((req.body.user_type === 'player' || req.body.user_type === 'other') && (req.body.game_id === '' || req.body.game_id === undefined)) {
             let apiResponse = response.generate(true, 'Game is required for user type Player or Other Personalities', {});
             res.status(400).send(apiResponse);
             return;
         }
 
-        if((req.body.user_type === 'player') && (req.body.position_id === '' || req.body.position_id === undefined)){
+        if ((req.body.user_type === 'player') && (req.body.position_id === '' || req.body.position_id === undefined)) {
             let apiResponse = response.generate(true, 'Position is required for user type Player', {});
             res.status(400).send(apiResponse);
             return;
         }
 
-        if(!finduser){
+        if (!finduser) {
             let apiResponse = response.generate(true, 'User not found', {});
             res.status(200).send(apiResponse);
             return;
         }
 
-        if(req.file){
+        if (req.file) {
             const bucketName = process.env.S3_BUCKET;
             const fileName = `${Date.now().toString()}${path.extname(req.file.originalname)}`;
             const filePath = req.file.path;
@@ -607,12 +607,12 @@ const updateProfile = async(req, res) => {
 
             objectUrl = uploadResult.Location;
         }
-        
+
         req.body = JSON.parse(JSON.stringify(req.body));
 
-        for(let key in req.body){
-            if(req.body[key].trim() === ''){
-                delete req.body[key]; 
+        for (let key in req.body) {
+            if (req.body[key].trim() === '') {
+                delete req.body[key];
             }
         }
 
@@ -643,9 +643,9 @@ const updateProfile = async(req, res) => {
         finduser.alumni_players = (req.body.hasOwnProperty('alumni_players') && (req.body.alumni_players.trim())) ? JSON.parse(req.body.alumni_players) : finduser.alumni_players;
         finduser.active_competition = (req.body.hasOwnProperty('active_competitions') && (req.body.active_competitions.trim())) ? JSON.parse(req.body.active_competitions) : finduser.active_competition;
         finduser.org_type = (req.body.hasOwnProperty('org_type') && (req.body.org_type.trim())) ? req.body.org_type : finduser.org_type;
-        finduser.desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.desc;  
+        finduser.desc = (req.body.hasOwnProperty('org_desc') && (req.body.org_desc.trim())) ? req.body.org_desc : finduser.desc;
         finduser.user_type = (req.body.hasOwnProperty('user_type')) ? req.body.user_type : finduser.user_type;
-        finduser.game = (req.body.hasOwnProperty('game_id') && (req.body.game_id.trim())) ? req.body.game_id : finduser.game;  
+        finduser.game = (req.body.hasOwnProperty('game_id') && (req.body.game_id.trim())) ? req.body.game_id : finduser.game;
         finduser.position = (req.body.hasOwnProperty('position_id') && (req.body.position_id.trim())) ? req.body.position_id : finduser.position;
         finduser.image = (objectUrl !== '') ? objectUrl : (finduser.image) ? finduser.image : DEFAULT_USER_IMAGE;
         finduser.estd = (req.body.hasOwnProperty('estd') && (req.body.estd.trim())) ? req.body.estd : finduser.estd;
@@ -661,19 +661,19 @@ const updateProfile = async(req, res) => {
         const game_id = req.body.game_id;
         const position_id = req.body.position_id;
 
-        if(game_id && position_id){
-            const groups = await groupModel.find({ game_id : game_id, position_id : position_id, status : 'active' });
-            if(groups.length > 0){
+        if (game_id && position_id) {
+            const groups = await groupModel.find({ game_id: game_id, position_id: position_id, status: 'active' });
+            if (groups.length > 0) {
                 await Promise.all(groups.map(async group => {
-                    let findGroup = await userGroupMappingTable.findOne({user_id : user_id, group_id : group._id});
-                    if(findGroup && findGroup.status === 'inactive'){
+                    let findGroup = await userGroupMappingTable.findOne({ user_id: user_id, group_id: group._id });
+                    if (findGroup && findGroup.status === 'inactive') {
                         findGroup.status = 'active';
                         await findGroup.save();
                     }
-                    else if(!findGroup){
+                    else if (!findGroup) {
                         let newGroupUserMapping = new userGroupMappingTable({
-                            user_id : user_id,
-                            group_id : group._id
+                            user_id: user_id,
+                            group_id: group._id
                         })
                         await newGroupUserMapping.save();
                     }
@@ -689,85 +689,85 @@ const updateProfile = async(req, res) => {
     }
 }
 
-const addGame = async(req, res) => {
-    try{
+const addGame = async (req, res) => {
+    try {
         const newGame = new gameModel({
-            name : req.body.game_name
+            name: req.body.game_name
         })
         await newGame.save();
 
         let apiResponse = response.generate(false, 'Added Successfully', {});
         res.status(200).send(apiResponse);
     }
-    catch(error){
+    catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
     }
 }
 
-const addPosition = async(req, res) => {
-    try{
+const addPosition = async (req, res) => {
+    try {
         const newPosition = new positionModel({
-            game_id : req.body.game_id,
-            name : req.body.position_name
+            game_id: req.body.game_id,
+            name: req.body.position_name
         })
         await newPosition.save();
 
         let apiResponse = response.generate(false, 'Added Successfully', {});
         res.status(200).send(apiResponse);
     }
-    catch(error){
+    catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
     }
 }
 
-const addGroup = async(req, res) => {
-    try{
+const addGroup = async (req, res) => {
+    try {
         const newGroup = new groupModel({
-            game_id : req.body.game_id,
-            position_id : req.body.position_id,
-            name : req.body.group_name
+            game_id: req.body.game_id,
+            position_id: req.body.position_id,
+            name: req.body.group_name
         })
         await newGroup.save();
 
         let apiResponse = response.generate(false, 'Added Successfully', {});
         res.status(200).send(apiResponse);
     }
-    catch(error){
+    catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
     }
 }
 
-const getUserGroupList = async(req, res) => {
+const getUserGroupList = async (req, res) => {
     try {
         const user_id = req.query.user_id;
 
-        const finduser = await UserModel.findOne({ _id : new mongoose.Types.ObjectId(user_id)});
+        const finduser = await UserModel.findOne({ _id: new mongoose.Types.ObjectId(user_id) });
 
         await commonController.assignGroupsToUser(finduser.game, finduser.position, finduser._id);
 
         const groups = await userGroupMappingTable.aggregate([
             {
-              $match: {
-                user_id : new mongoose.Types.ObjectId(user_id),
-                status : 'active'
-              }
+                $match: {
+                    user_id: new mongoose.Types.ObjectId(user_id),
+                    status: 'active'
+                }
             },
             {
-              $lookup: {
-                from: 'groups',
-                localField: "group_id",
-                foreignField: "_id",
-                as: "group"
-              }
+                $lookup: {
+                    from: 'groups',
+                    localField: "group_id",
+                    foreignField: "_id",
+                    as: "group"
+                }
             },
             {
-              $unwind: "$group"
+                $unwind: "$group"
             }
         ])
-        if(groups.length < 1){
+        if (groups.length < 1) {
             let apiResponse = response.generate(true, "User has no active group. Update profile or request admin to create a group", []);
             res.status(200).send(apiResponse);
             return;
@@ -833,16 +833,16 @@ const addMatches = async (req, res) => {
     }
 };
 
-const getUserMatches = async(req, res) => {
+const getUserMatches = async (req, res) => {
     try {
         let user_id = req.query.user_id;
 
-        let rawdata = await postModel.find({ type : 'match', status : 'active' });
+        let rawdata = await postModel.find({ type: 'match', status: 'active' });
 
 
         let returndata = [];
 
-        if(rawdata.length < 1){
+        if (rawdata.length < 1) {
             let apiResponse = response.generate(false, 'No match of the user is found', []);
             res.status(200).send(apiResponse);
             return;
@@ -850,16 +850,16 @@ const getUserMatches = async(req, res) => {
 
         rawdata.forEach(row => {
             returndata.push({
-                id : row._id,
-                title : row.text,
-                url : row.reel_link,
-                likes : row.likes,
-                comment : 0
+                id: row._id,
+                title: row.text,
+                url: row.reel_link,
+                likes: row.likes,
+                comment: 0
             })
         })
 
         returndata.unshift('MATCHES');
-        
+
         let apiResponse = response.generate(false, 'All Matches Of User', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
@@ -868,7 +868,7 @@ const getUserMatches = async(req, res) => {
     }
 }
 
-const getUserProfileData = async(req, res) => {
+const getUserProfileData = async (req, res) => {
     try {
         const user_id = req.query.user_id;
 
@@ -876,22 +876,22 @@ const getUserProfileData = async(req, res) => {
 
         let userdtls = await UserModel.aggregate([
             {
-              $match: {
-                _id : new mongoose.Types.ObjectId(user_id),
-                is_active : true
-              }
+                $match: {
+                    _id: new mongoose.Types.ObjectId(user_id),
+                    is_active: true
+                }
             },
             {
-              $lookup: {
-                from: 'posts',
-                localField: '_id',
-                foreignField: 'user_id',
-                as: 'reels'
-              }
+                $lookup: {
+                    from: 'posts',
+                    localField: '_id',
+                    foreignField: 'user_id',
+                    as: 'reels'
+                }
             }
         ]);
 
-        if(userdtls.length < 1){
+        if (userdtls.length < 1) {
             let apiResponse = response.generate(true, 'User Not Found', {});
             res.status(200).send(apiResponse);
         }
@@ -901,27 +901,27 @@ const getUserProfileData = async(req, res) => {
         delete userdtls.__v;
         delete userdtls.password;
 
-        if(userdtls.hasOwnProperty('game') && userdtls.game != ''){
+        if (userdtls.hasOwnProperty('game') && userdtls.game != '') {
             let game = await gameModel.findById(userdtls.game).lean();
-            if(game)
+            if (game)
                 userdtls.game_name = game.name;
         }
 
-        if(userdtls.hasOwnProperty('position') && userdtls.position != ''){
+        if (userdtls.hasOwnProperty('position') && userdtls.position != '') {
             let position = await positionModel.findById(userdtls.position).lean();
-            if(position)
+            if (position)
                 userdtls.position_name = position.name;
         }
 
-        if(userdtls.hasOwnProperty('org_type') && userdtls.org_type != ''){
+        if (userdtls.hasOwnProperty('org_type') && userdtls.org_type != '') {
             let org_type = await orgTypeModel.findById(userdtls.org_type).lean();
-            if(org_type)
+            if (org_type)
                 userdtls.org_type_name = org_type.org_type_name;
         }
 
-        if(userdtls.hasOwnProperty('type') && userdtls.type != ''){
+        if (userdtls.hasOwnProperty('type') && userdtls.type != '') {
             let type = await personalityTypeModel.findById(userdtls.type).lean();
-            if(type)
+            if (type)
                 userdtls.type_name = type.personality_type_name;
         }
 
@@ -934,40 +934,40 @@ const getUserProfileData = async(req, res) => {
     }
 }
 
-const getExplore = async(req, res) => {
+const getExplore = async (req, res) => {
     try {
         const user_id = req.query.user_id;
         const search_string = req.query.search_string;
         const returndata = {};
 
-        if(!search_string){
+        if (!search_string) {
             const reels = await postModel.aggregate([
                 {
                     $match: {
-                    //   type : '',
-                    status : 'active'
+                        //   type : '',
+                        status: 'active'
                     }
                 },
                 {
-                    $sample : { size : 6 }
+                    $sample: { size: 6 }
                 }
             ])
 
             const users = await UserModel.aggregate([
                 {
                     $match: {
-                    is_active : true
+                        is_active: true
                     }
                 },
                 {
-                    $sample : { size : 2 }
+                    $sample: { size: 2 }
                 },
                 {
                     $project: {
-                        name : 1,
-                        email : 1,
-                        image : 1,
-                        game_id : 1
+                        name: 1,
+                        email: 1,
+                        image: 1,
+                        game_id: 1
                     }
                 }
             ])
@@ -996,16 +996,16 @@ const getExplore = async(req, res) => {
             // returndata.reels = reels;
 
             returndata.users.push({
-                userDetails : users,
-                reels : reels
+                userDetails: users,
+                reels: reels
             })
         }
-        else{
+        else {
             const reels = await postModel.aggregate([
                 {
                     $match: {
-                        text : { $regex: new RegExp(search_string, 'i') },
-                        status : 'active'
+                        text: { $regex: new RegExp(search_string, 'i') },
+                        status: 'active'
                     }
                 }
             ])
@@ -1013,18 +1013,18 @@ const getExplore = async(req, res) => {
             const users = await UserModel.aggregate([
                 {
                     $match: {
-                        $or : [
-                            {name : { $regex: new RegExp(search_string, 'i') }},
-                            {email : { $regex: new RegExp(search_string, 'i') }}
+                        $or: [
+                            { name: { $regex: new RegExp(search_string, 'i') } },
+                            { email: { $regex: new RegExp(search_string, 'i') } }
                         ],
-                        is_active : true
+                        is_active: true
                     }
                 },
                 {
                     $project: {
-                        name : 1,
-                        email : 1,
-                        image : 1,
+                        name: 1,
+                        email: 1,
+                        image: 1,
                     }
                 }
             ])
@@ -1034,12 +1034,12 @@ const getExplore = async(req, res) => {
             // returndata.reels = reels;
 
             returndata.users.push({
-                userDetails : users,
-                reels : reels
+                userDetails: users,
+                reels: reels
             })
         }
 
-        if(returndata.users[0].userDetails.length < 1 && returndata.users[0].reels.length  < 1)
+        if (returndata.users[0].userDetails.length < 1 && returndata.users[0].reels.length < 1)
             returndata.users = [];
 
         let apiResponse = response.generate(false, 'Explore Section data', returndata);
@@ -1098,16 +1098,16 @@ const addPodcast = async (req, res) => {
     }
 };
 
-const getPodcast = async(req, res) => {
+const getPodcast = async (req, res) => {
     try {
         let user_id = req.query.user_id;
 
-        let rawdata = await postModel.find({ type : 'podcast', status : 'active' });
+        let rawdata = await postModel.find({ type: 'podcast', status: 'active' });
 
 
         let returndata = [];
 
-        if(rawdata.length < 1){
+        if (rawdata.length < 1) {
             let apiResponse = response.generate(false, 'No podcast is found', []);
             res.status(200).send(apiResponse);
             return;
@@ -1115,16 +1115,16 @@ const getPodcast = async(req, res) => {
 
         rawdata.forEach(row => {
             returndata.push({
-                id : row._id,
-                title : row.text,
-                url : row.reel_link,
-                likes : row.likes,
-                comment : 0
+                id: row._id,
+                title: row.text,
+                url: row.reel_link,
+                likes: row.likes,
+                comment: 0
             })
         })
 
         returndata.unshift('PODCASTS');
-        
+
         let apiResponse = response.generate(false, 'All Matches Of User', returndata);
         res.status(200).send(apiResponse);
     } catch (error) {
@@ -1133,14 +1133,14 @@ const getPodcast = async(req, res) => {
     }
 }
 
-const updateView = async(req, res) => {
+const updateView = async (req, res) => {
     try {
         let user_id = req.user._id;
         let reel_id = req.body.reel_id;
 
         let reel = await postModel.findById(reel_id);
 
-        if(!reel){
+        if (!reel) {
             let apiResponse = response.generate(false, 'Reel not found', {});
             res.status(200).send(apiResponse);
         }
@@ -1167,33 +1167,33 @@ const updateView = async(req, res) => {
 //     }
 // }
 
-const followUser = async(req, res) => {
+const followUser = async (req, res) => {
     try {
         let user_id = req.user._id;
         let followed_user_id = req.body.user_id;
 
-        let isMapped = await followModel.findOne({followed_user_id : new mongoose.Types.ObjectId(followed_user_id), follower_user_id : new mongoose.Types.ObjectId(user_id)});
+        let isMapped = await followModel.findOne({ followed_user_id: new mongoose.Types.ObjectId(followed_user_id), follower_user_id: new mongoose.Types.ObjectId(user_id) });
 
-        if(isMapped && isMapped.status === 'inactive'){
+        if (isMapped && isMapped.status === 'inactive') {
             isMapped.status = 'active';
             await isMapped.save();
         }
-        else if(!isMapped){
+        else if (!isMapped) {
             let newFollowModel = new followModel({
-                followed_user_id : new mongoose.Types.ObjectId(followed_user_id),
-                follower_user_id : new mongoose.Types.ObjectId(user_id)
+                followed_user_id: new mongoose.Types.ObjectId(followed_user_id),
+                follower_user_id: new mongoose.Types.ObjectId(user_id)
             })
-    
-            await newFollowModel.save(); 
+
+            await newFollowModel.save();
         }
-        else if(isMapped && isMapped.status === 'active'){
+        else if (isMapped && isMapped.status === 'active') {
             isMapped.status = 'inactive';
             await isMapped.save();
         }
 
         let apiResponse = response.generate(false, 'Followed successfully', {});
         res.status(200).send(apiResponse);
-        
+
     } catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
@@ -1201,38 +1201,67 @@ const followUser = async(req, res) => {
 }
 
 
-const getLeaderboard = async(req, res) => {
+const getLeaderboard = async (req, res) => {
     try {
-        const { filter, game_id, year } = req.body;
-        const users = await UserModel.aggregate([
-            {
-                $match : {
-                    game : game_id,
-                }
-            },
-            {
-                $sort : {
-                    score : -1
-                }
-            },
-            {
-                $project: {
-                    name : 1,
-                    email : 1,
-                    image : 1,
-                    score : 1,
-                    dob : 1
-                }
-            }
-        ])
 
-        if(users.length < 1){
+        /*
+ {
+                    game_id: selectedgame && selectedgame,
+                    filter: selectedrank && selectedrank,
+                    year: selectedyear && selectedyear
+                }
+        */
+        const { filter, game_id, year } = req.body;
+        let users = []
+        if (game_id === 'all') {
+            users = await UserModel.aggregate([
+                {
+                    $sort: {
+                        score: -1
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        email: 1,
+                        image: 1,
+                        score: 1,
+                        dob: 1
+                    }
+                }
+            ]);
+
+        } else {
+            users = await UserModel.aggregate([
+                {
+                    $match: {
+                        game: game_id,
+                    }
+                },
+                {
+                    $sort: {
+                        score: -1
+                    }
+                },
+                {
+                    $project: {
+                        name: 1,
+                        email: 1,
+                        image: 1,
+                        score: 1,
+                        dob: 1
+                    }
+                }
+            ])
+        }
+
+        if (users.length < 1) {
             let apiResponse = response.generate(false, 'No users found for your search', {});
             return res.status(200).send(apiResponse);
         }
 
-        
-        let apiResponse = response.generate(false, 'Users found and fetched', {users});
+
+        let apiResponse = response.generate(false, 'Users found and fetched', { users });
         res.status(200).send(apiResponse);
 
 
@@ -1242,12 +1271,12 @@ const getLeaderboard = async(req, res) => {
     }
 }
 
-const addOrgType = async(req, res) => {
+const addOrgType = async (req, res) => {
     try {
         const { org_type_name } = req.body;
 
         const newOrgType = new orgTypeModel({
-            org_type_name : org_type_name
+            org_type_name: org_type_name
         })
 
         await newOrgType.save();
@@ -1261,7 +1290,7 @@ const addOrgType = async(req, res) => {
     }
 }
 
-const getOrgTypes = async(req, res) => {
+const getOrgTypes = async (req, res) => {
     try {
         const allOrgTypes = await orgTypeModel.find({}).lean();
 
@@ -1271,34 +1300,34 @@ const getOrgTypes = async(req, res) => {
     } catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
-    }    
+    }
 }
 
-const addEvent = async(req, res) => {
+const addEvent = async (req, res) => {
     try {
         const user_id = req.body.user_id;
         let finduser = await UserModel.findOne({ _id: user_id }).select('-__v').lean();
-        if(!finduser){
+        if (!finduser) {
             let apiResponse = response.generate(true, "User not found", {});
             return res.status(500).send(apiResponse);
         }
-        
-        if(!['team', 'orgs'].includes(finduser.user_type)){
+
+        if (!['team', 'orgs'].includes(finduser.user_type)) {
             let apiResponse = response.generate(true, "Event can only be added by a club/team or organization", {});
             return res.status(500).send(apiResponse);
         }
-        
+
         const newEvent = new eventModel({
-            user_id : user_id,
-            event_title : req.body.event_title,
-            event_desc : req.body.event_desc,
-            event_for : req.body.event_for,
-            coached_by : req.body.coached_by,
-            scouted_by : req.body.scouted_by,
-            location : req.body.location,
-            map_link : req.body.map_link,
-            event_date : req.body.event_date,
-            event_time : req.body.event_time,
+            user_id: user_id,
+            event_title: req.body.event_title,
+            event_desc: req.body.event_desc,
+            event_for: req.body.event_for,
+            coached_by: req.body.coached_by,
+            scouted_by: req.body.scouted_by,
+            location: req.body.location,
+            map_link: req.body.map_link,
+            event_date: req.body.event_date,
+            event_time: req.body.event_time,
         })
 
         await newEvent.save();
@@ -1314,32 +1343,32 @@ const addEvent = async(req, res) => {
     }
 }
 
-const editEvent = async(req, res) => {
+const editEvent = async (req, res) => {
     try {
         const event_id = req.body.event_id;
         let event = await eventModel.findById(event_id);
-        
-        if(!event){
+
+        if (!event) {
             let apiResponse = response.generate(true, "Event not found", {});
             return res.status(500).send(apiResponse);
         }
-        
-        if(event.user_id.toString() !== req.body.user_id){
+
+        if (event.user_id.toString() !== req.body.user_id) {
             let apiResponse = response.generate(true, "User is not allowed to modify this event", {});
             return res.status(500).send(apiResponse);
         }
-        
-        event.event_title = (req.body.event_title) ? req.body.event_title : event.event_title,
-        event.event_desc = (req.body.event_desc) ? req.body.event_desc : event.event_desc,
-        event.event_for = (req.body.event_for) ? req.body.event_for : event.event_for,
-        event.coached_by = (req.body.coached_by) ? req.body.coached_by : event.coached_by,
-        event.scouted_by = (req.body.scouted_by) ? req.body.scouted_by : event.scouted_by,
-        event.location = (req.body.location) ? req.body.location : event.location,
-        event.map_link = (req.body.map_link) ? req.body.map_link : event.map_link,
-        event.event_date = (req.body.event_date) ? req.body.event_date : event.event_date,
-        event.event_time = (req.body.event_time) ? req.body.event_time : event.event_time,
 
-        await event.save();
+        event.event_title = (req.body.event_title) ? req.body.event_title : event.event_title,
+            event.event_desc = (req.body.event_desc) ? req.body.event_desc : event.event_desc,
+            event.event_for = (req.body.event_for) ? req.body.event_for : event.event_for,
+            event.coached_by = (req.body.coached_by) ? req.body.coached_by : event.coached_by,
+            event.scouted_by = (req.body.scouted_by) ? req.body.scouted_by : event.scouted_by,
+            event.location = (req.body.location) ? req.body.location : event.location,
+            event.map_link = (req.body.map_link) ? req.body.map_link : event.map_link,
+            event.event_date = (req.body.event_date) ? req.body.event_date : event.event_date,
+            event.event_time = (req.body.event_time) ? req.body.event_time : event.event_time,
+
+            await event.save();
 
         let apiResponse = response.generate(false, "Event Modified Successfully", event);
         res.status(200).send(apiResponse);
@@ -1350,24 +1379,24 @@ const editEvent = async(req, res) => {
     }
 }
 
-const deleteEvent = async(req, res) => {
+const deleteEvent = async (req, res) => {
     try {
         const event_id = req.body.event_id;
         let event = await eventModel.findById(event_id);
-        
-        if(!event){
+
+        if (!event) {
             let apiResponse = response.generate(true, "Event not found", {});
             return res.status(500).send(apiResponse);
         }
-        
-        if(event.user_id.toString() !== req.body.user_id){
+
+        if (event.user_id.toString() !== req.body.user_id) {
             let apiResponse = response.generate(true, "User is not allowed to modify this event", {});
             return res.status(500).send(apiResponse);
         }
-        
+
         event.status = 'deleted',
 
-        await event.save();
+            await event.save();
 
         let apiResponse = response.generate(false, "Event Deleted Successfully", {});
         res.status(200).send(apiResponse);
@@ -1379,24 +1408,24 @@ const deleteEvent = async(req, res) => {
 }
 
 
-const getOtherPersonalityTypeList = async(req, res) => {
+const getOtherPersonalityTypeList = async (req, res) => {
     try {
-        let types = await personalityTypeModel.find({ status : 'active' });
+        let types = await personalityTypeModel.find({ status: 'active' });
 
-        let apiResponse = response.generate(false, "List of all types", { types});
+        let apiResponse = response.generate(false, "List of all types", { types });
         res.status(200).send(apiResponse);
-        
+
     } catch (error) {
         let apiResponse = response.generate(true, error.message, {});
         res.status(500).send(apiResponse);
     }
 }
 
-const getEvents = async(req, res) => {
+const getEvents = async (req, res) => {
     try {
         const { user_id, date } = req.body;
 
-        const events = await eventModel.find({ event_date : date, status : 'active' }).sort({ event_time : 1 });
+        const events = await eventModel.find({ event_date: date, status: 'active' }).sort({ event_time: 1 });
 
         let apiResponse = response.generate(false, `Events for ${date}`, { events });
         res.status(200).send(apiResponse);
@@ -1407,43 +1436,43 @@ const getEvents = async(req, res) => {
     }
 }
 
-const getVideos = async(req, res) => {
+const getVideos = async (req, res) => {
     try {
-    //   const reel_id = req.query.reel_id;
-    //   const reel = await postModel.findById(reel_id).lean();
-    //   if(!reel){
-    //     let apiResponse = response.generate(false, `Invalid Reel Id`, []);
-    //     res.status(200).send(apiResponse);
-    //     return;
-    //   }
-    //   const type = reel.type;
-      const type = req.query.type;
-      const reels = await postModel.find({ type : (type === 'reel') ? '' : type, status : 'active' });
+        //   const reel_id = req.query.reel_id;
+        //   const reel = await postModel.findById(reel_id).lean();
+        //   if(!reel){
+        //     let apiResponse = response.generate(false, `Invalid Reel Id`, []);
+        //     res.status(200).send(apiResponse);
+        //     return;
+        //   }
+        //   const type = reel.type;
+        const type = req.query.type;
+        const reels = await postModel.find({ type: (type === 'reel') ? '' : type, status: 'active' });
 
-      let apiResponse = response.generate(false, `${type} videos found`, reels );
-      res.status(200).send(apiResponse);
+        let apiResponse = response.generate(false, `${type} videos found`, reels);
+        res.status(200).send(apiResponse);
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
     }
 }
 
-const getGroupsOfUser = async(req, res) => {
+const getGroupsOfUser = async (req, res) => {
     try {
         let user_id = req.query.user_id;
         console.log(`user_id :`, user_id);
         let groups = await userGroupMappingTable.aggregate([
             {
-              $match: {
-                user_id : new mongoose.Types.ObjectId(user_id)
-              }
+                $match: {
+                    user_id: new mongoose.Types.ObjectId(user_id)
+                }
             },
             {
                 $lookup: {
-                  from: "groups",
-                  localField: "group_id",
-                  foreignField: "_id",
-                  as: "groupdtls"
+                    from: "groups",
+                    localField: "group_id",
+                    foreignField: "_id",
+                    as: "groupdtls"
                 }
             },
             {
@@ -1451,10 +1480,10 @@ const getGroupsOfUser = async(req, res) => {
             },
             {
                 $lookup: {
-                  from: "positions",
-                  localField: "groupdtls.position_id",
-                  foreignField: "_id",
-                  as: "positiondtls"
+                    from: "positions",
+                    localField: "groupdtls.position_id",
+                    foreignField: "_id",
+                    as: "positiondtls"
                 }
             },
             {
@@ -1462,10 +1491,10 @@ const getGroupsOfUser = async(req, res) => {
             },
             {
                 $lookup: {
-                  from: "games",
-                  localField: "groupdtls.game_id",
-                  foreignField: "_id",
-                  as: "gamedtls"
+                    from: "games",
+                    localField: "groupdtls.game_id",
+                    foreignField: "_id",
+                    as: "gamedtls"
                 }
             },
             {
@@ -1473,8 +1502,8 @@ const getGroupsOfUser = async(req, res) => {
             }
         ])
 
-        if(groups.lenth < 1){
-            let apiResponse = response.generate(false, `User does not belong to any group.`, [] );
+        if (groups.lenth < 1) {
+            let apiResponse = response.generate(false, `User does not belong to any group.`, []);
             res.status(200).send(apiResponse);
             return;
         }
@@ -1484,55 +1513,55 @@ const getGroupsOfUser = async(req, res) => {
         await Promise.all(groups.map(async (group) => {
             let count = await getGroupUserCount(group.groupdtls._id);
             let temp = {
-                group_id : group.groupdtls._id,
-                group_name : group.groupdtls.name,
-                group_for_game : group.gamedtls.name,
-                group_for_position : group.positiondtls.name,
-                usercount : count
+                group_id: group.groupdtls._id,
+                group_name: group.groupdtls.name,
+                group_for_game: group.gamedtls.name,
+                group_for_position: group.positiondtls.name,
+                usercount: count
             }
-            
+
             response_data.push(temp);
         }))
 
-        let apiResponse = response.generate(false, `User group retrived.`, response_data );
+        let apiResponse = response.generate(false, `User group retrived.`, response_data);
         res.status(200).send(apiResponse);
         return;
-        
+
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
     }
 }
 
-const getGroupUserCount = async(group_id) => {
+const getGroupUserCount = async (group_id) => {
     let count = await userGroupMappingTable.countDocuments([
         {
-          $match: {
-            group_id : mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
-            status : 'active'
-          }
+            $match: {
+                group_id: mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
+                status: 'active'
+            }
         },
         {
-          $lookup: {
-            from: "users",
-            localField: "user_id",
-            foreignField: "_id",
-            as: "userdtls"
-          }
+            $lookup: {
+                from: "users",
+                localField: "user_id",
+                foreignField: "_id",
+                as: "userdtls"
+            }
         },
         {
-          $unwind: "$userdtls"
+            $unwind: "$userdtls"
         },
         {
-          $project: {
-            userdtls : 1
-          }
+            $project: {
+                userdtls: 1
+            }
         }
     ]);
     return count;
 }
 
-const validateToken = async(req, res) => {
+const validateToken = async (req, res) => {
     try {
         const token = require('../libs/tokenLib');
         if (req.query.token && !check.isEmpty(req.query.token)) {
@@ -1540,8 +1569,8 @@ const validateToken = async(req, res) => {
             token_str = token_str.replace("Bearer ", "");
             let decoded = await token.verifyClaimWithoutSecret(token_str);
             let user = decoded.user;
-            if(user){
-                let apiResponse = response.generate(false, `Token is valid`, {} );
+            if (user) {
+                let apiResponse = response.generate(false, `Token is valid`, {});
                 res.status(200).send(apiResponse);
             }
         } else {
@@ -1556,39 +1585,39 @@ const validateToken = async(req, res) => {
     }
 }
 
-const getPreviousChatByGroupId = async(req, res) => {
+const getPreviousChatByGroupId = async (req, res) => {
     try {
         let group_id = req.query.group_id;
         let user_id = req.user._id;
         let chats = await chatModel.aggregate([
             {
-              $match: {
-                group_id : new mongoose.Types.ObjectId(group_id),
-                status : 'active'
-              }
+                $match: {
+                    group_id: new mongoose.Types.ObjectId(group_id),
+                    status: 'active'
+                }
             },
             {
-              $lookup: {
-                from: "users",
-                localField: "sender_id",
-                foreignField: "_id",
-                as: "userdtls"
-              }
+                $lookup: {
+                    from: "users",
+                    localField: "sender_id",
+                    foreignField: "_id",
+                    as: "userdtls"
+                }
             },
             {
-              $unwind: "$userdtls"
+                $unwind: "$userdtls"
             },
             {
-              $sort: {
-                created_at: 1
-              }
+                $sort: {
+                    created_at: 1
+                }
             }
         ]);
         // console.log(chats);
-        if(chats.length > 0){
+        if (chats.length > 0) {
 
             chats.map((chat) => {
-                if(chat.sender_id.toString() === user_id.toString())
+                if (chat.sender_id.toString() === user_id.toString())
                     chat.isCurrentUser = true;
                 else
                     chat.isCurrentUser = false;
@@ -1599,7 +1628,7 @@ const getPreviousChatByGroupId = async(req, res) => {
             let apiResponse = response.generate(false, 'Chats found', chats);
             res.status(200).send(apiResponse);
         }
-        else{
+        else {
             let apiResponse = response.generate(false, 'No Chats found', []);
             res.status(200).send(apiResponse);
         }
@@ -1610,30 +1639,30 @@ const getPreviousChatByGroupId = async(req, res) => {
     }
 }
 
-const getUsersOfByGroupId = async(req, res) => {
+const getUsersOfByGroupId = async (req, res) => {
     try {
         let users = await userGroupMappingTable.aggregate([
             {
-              $match: {
-                group_id : mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
-                status : 'active'
-              }
+                $match: {
+                    group_id: mongoose.Types.ObjectId('65a28856865c2f36ff07c03b'),
+                    status: 'active'
+                }
             },
             {
-              $lookup: {
-                from: "users",
-                localField: "user_id",
-                foreignField: "_id",
-                as: "userdtls"
-              }
+                $lookup: {
+                    from: "users",
+                    localField: "user_id",
+                    foreignField: "_id",
+                    as: "userdtls"
+                }
             },
             {
-              $unwind: "$userdtls"
+                $unwind: "$userdtls"
             },
             {
-              $project: {
-                userdtls : 1
-              }
+                $project: {
+                    userdtls: 1
+                }
             }
         ])
         users.map((user) => {
@@ -1642,7 +1671,7 @@ const getUsersOfByGroupId = async(req, res) => {
 
         let apiResponse = response.generate(false, "Users found", users);
         res.status(200).send(apiResponse);
-        
+
     } catch (error) {
         let apiResponse = response.generate(true, error.message, []);
         res.status(500).send(apiResponse);
@@ -1671,11 +1700,11 @@ const uploadChatFiles = async (req, res) => {
 
         const objectUrl = uploadResult.Location;
 
-        let apiResponse = response.generate(false, 'File uploaded successfully', { url : objectUrl });
+        let apiResponse = response.generate(false, 'File uploaded successfully', { url: objectUrl });
         res.status(200).send(apiResponse);
     } catch (error) {
         console.error('Error uploading file:', error);
-        let apiResponse = response.generate(true, 'File upload failed :'+ error.message, {});
+        let apiResponse = response.generate(true, 'File upload failed :' + error.message, {});
         res.status(500).send(apiResponse);
     } finally {
         // Clean up: Delete the temporary file
@@ -1703,20 +1732,20 @@ module.exports = {
     dislikePost: dislikePost,
     commentPost: commentPost,
     deleteAllReels: deleteAllReels,
-    getGameList : getGameList,
-    getPositionsList : getPositionsList,
-    updateProfile : updateProfile,
+    getGameList: getGameList,
+    getPositionsList: getPositionsList,
+    updateProfile: updateProfile,
     addGame: addGame,
     addPosition: addPosition,
     addGroup: addGroup,
     getUserGroupList: getUserGroupList,
-    addMatches : addMatches,
+    addMatches: addMatches,
     getUserMatches: getUserMatches,
     getUserProfileData: getUserProfileData,
     getExplore: getExplore,
-    addPodcast : addPodcast,
-    getPodcast : getPodcast,
-    updateView : updateView,
+    addPodcast: addPodcast,
+    getPodcast: getPodcast,
+    updateView: updateView,
     followUser: followUser,
     getLeaderboard: getLeaderboard,
     getOrgTypes: getOrgTypes,
@@ -1724,12 +1753,12 @@ module.exports = {
     addEvent: addEvent,
     editEvent: editEvent,
     getEvents: getEvents,
-    getOtherPersonalityTypeList : getOtherPersonalityTypeList,
-    deleteEvent : deleteEvent,
-    getVideos : getVideos,
-    getGroupsOfUser : getGroupsOfUser,
-    validateToken : validateToken,
-    getPreviousChatByGroupId : getPreviousChatByGroupId,
-    getUsersOfByGroupId : getUsersOfByGroupId,
-    uploadChatFiles : uploadChatFiles
+    getOtherPersonalityTypeList: getOtherPersonalityTypeList,
+    deleteEvent: deleteEvent,
+    getVideos: getVideos,
+    getGroupsOfUser: getGroupsOfUser,
+    validateToken: validateToken,
+    getPreviousChatByGroupId: getPreviousChatByGroupId,
+    getUsersOfByGroupId: getUsersOfByGroupId,
+    uploadChatFiles: uploadChatFiles
 }
