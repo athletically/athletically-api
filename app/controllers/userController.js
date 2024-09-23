@@ -1191,6 +1191,7 @@ const followUser = async (req, res) => {
             await isMapped.save();
         }
 
+        console.log('')
         let apiResponse = response.generate(false, 'Followed successfully', {});
         res.status(200).send(apiResponse);
 
