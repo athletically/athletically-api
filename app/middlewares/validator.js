@@ -509,7 +509,7 @@ let followUserValidate = async(req, res, next) => {
 
 let getLeaderboardValidateSchema = Joi.object({
     game_id : Joi.string().required(),
-    filter : Joi.string().valid('overall', 'state').required(),
+    filter : Joi.string().valid('overall', 'state', 'all').required(),
     year : Joi.string().required(),
 })
 
@@ -522,6 +522,7 @@ let getLeaderboardValidate = async(req, res, next) => {
             next();
         }
     } catch (err) {
+        console.log(err, "errr")
         err.message = err.message.replace('ValidationError: ', "");
         let apiResponse = responseLib.generate(true, ` ${err.message}`, null);
         res.status(400);

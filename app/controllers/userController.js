@@ -1212,6 +1212,7 @@ const getLeaderboard = async (req, res) => {
                     year: selectedyear && selectedyear
                 }
         */
+       console.log(req.body)
         const { filter, game_id, year } = req.body;
         let users = []
         if (game_id === 'all') {
